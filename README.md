@@ -1,6 +1,14 @@
 # Workout Logger
 
+[![Build Android APK](https://github.com/barelyhuman/workout-logger/actions/workflows/build-android.yml/badge.svg)](https://github.com/barelyhuman/workout-logger/actions/workflows/build-android.yml)
+
 A minimal, monochromatic workout logging app for Android that helps you create and track calisthenics workout routines locally on your phone.
+
+## Download
+
+📥 **[Download Latest APK](https://github.com/barelyhuman/workout-logger/releases)**
+
+The latest APK builds are automatically generated and available in the [Releases](https://github.com/barelyhuman/workout-logger/releases) section. Each build is tagged with the date and time it was created.
 
 ## Features
 

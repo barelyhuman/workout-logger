@@ -1,0 +1,81 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Expo
+        run: |
+          npm install -g expo-cli
+          npx expo install --check
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --clean
+
+      - name: Build Android APK (Debug)
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Rename APK
+        run: |
+          mkdir -p build
+          cp android/app/build/outputs/apk/debug/app-debug.apk \
+            build/workout-logger-${{ steps.date.outputs.date }}.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: workout-logger-${{ steps.date.outputs.date }}
+          path: build/workout-logger-${{ steps.date.outputs.date }}.apk
+          retention-days: 90
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        with:
+          tag_name: build-${{ steps.date.outputs.date }}
+          name: Build ${{ steps.date.outputs.date }}
+          body: |
+            Automated build from commit ${{ github.sha }}
+            Built on: ${{ steps.date.outputs.date }}
+
+            📱 Download the APK below and install it on your Android device.
+          files: build/workout-logger-${{ steps.date.outputs.date }}.apk
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
