@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -41,10 +43,10 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Build Android APK (Debug)
+      - name: Build Android APK (Release)
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon
 
       - name: Get current date
         id: date
@@ -53,7 +55,7 @@ jobs:
       - name: Rename APK
         run: |
           mkdir -p build
-          cp android/app/build/outputs/apk/debug/app-debug.apk \
+          cp android/app/build/outputs/apk/release/app-release-unsigned.apk \
             build/workout-logger-${{ steps.date.outputs.date }}.apk
 
       - name: Upload APK artifact
