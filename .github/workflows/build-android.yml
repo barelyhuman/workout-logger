@@ -55,8 +55,18 @@ jobs:
       - name: Rename APK
         run: |
           mkdir -p build
-          cp android/app/build/outputs/apk/release/app-release-unsigned.apk \
-            build/workout-logger-${{ steps.date.outputs.date }}.apk
+          # Try to find the APK file (could be app-release.apk or app-release-unsigned.apk)
+          if [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
+            cp android/app/build/outputs/apk/release/app-release.apk \
+              build/workout-logger-${{ steps.date.outputs.date }}.apk
+          elif [ -f android/app/build/outputs/apk/release/app-release-unsigned.apk ]; then
+            cp android/app/build/outputs/apk/release/app-release-unsigned.apk \
+              build/workout-logger-${{ steps.date.outputs.date }}.apk
+          else
+            echo "Error: Could not find APK file"
+            ls -la android/app/build/outputs/apk/release/
+            exit 1
+          fi
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
