@@ -232,7 +232,11 @@ export const CreateRoutineScreen = ({ route, navigation }) => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select from Library</Text>
-              <TouchableOpacity onPress={() => setLibraryModalVisible(false)}>
+              <TouchableOpacity 
+                onPress={() => setLibraryModalVisible(false)}
+                accessibilityLabel="Close exercise library"
+                accessibilityRole="button"
+              >
                 <Text style={styles.modalCloseButton}>✕</Text>
               </TouchableOpacity>
             </View>

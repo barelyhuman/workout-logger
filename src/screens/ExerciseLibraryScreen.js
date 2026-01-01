@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
-import { loadExerciseLibrary, saveExerciseLibrary } from '../utils/storage';
+import { loadExerciseLibrary, saveExerciseLibrary, isExerciseLibraryInitialized, setExerciseLibraryInitialized } from '../utils/storage';
 import { defaultExercises } from '../data/defaultExercises';
 import { Button } from '../components/Button';
 
@@ -32,10 +32,14 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     setLoading(true);
     let data = await loadExerciseLibrary();
 
-    // If no exercises, initialize with defaults
+    // Initialize with defaults only once
     if (data.length === 0) {
-      data = defaultExercises;
-      await saveExerciseLibrary(data);
+      const initialized = await isExerciseLibraryInitialized();
+      if (!initialized) {
+        data = defaultExercises;
+        await saveExerciseLibrary(data);
+        await setExerciseLibraryInitialized();
+      }
     }
 
     setExercises(data);
@@ -71,9 +75,9 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
           : ex
       );
     } else {
-      // Add new exercise
+      // Add new exercise with more robust ID generation
       const newExercise = {
-        id: Date.now().toString(),
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         name: exerciseName.trim(),
         category: exerciseCategory.trim() || 'Other',
       };
