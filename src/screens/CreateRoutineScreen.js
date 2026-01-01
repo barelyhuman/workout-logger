@@ -455,6 +455,7 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.text,
     fontWeight: '600',
-    textDecorationLine: 'underline',
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.text,
   },
 });

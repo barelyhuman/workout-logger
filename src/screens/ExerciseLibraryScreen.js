@@ -77,7 +77,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     } else {
       // Add new exercise with more robust ID generation
       const newExercise = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
         name: exerciseName.trim(),
         category: exerciseCategory.trim() || 'Other',
       };
