@@ -331,10 +331,10 @@ const styles = StyleSheet.create({
   exerciseInputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: theme.spacing.sm,
   },
   exerciseNameInput: {
     flex: 1,
+    marginRight: theme.spacing.sm,
   },
   libraryButton: {
     backgroundColor: theme.colors.background,
