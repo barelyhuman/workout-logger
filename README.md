@@ -31,7 +31,7 @@ The latest APK builds are automatically generated and available in the [Releases
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
+- Node.js (v20 or higher)
 - npm or yarn
 - Expo CLI
 - Android device or emulator
