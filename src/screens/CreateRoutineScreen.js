@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,12 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
-import { loadRoutines, saveRoutines } from '../utils/storage';
+import { loadRoutines, saveRoutines, loadExerciseLibrary } from '../utils/storage';
 import { Button } from '../components/Button';
 
 export const CreateRoutineScreen = ({ route, navigation }) => {
@@ -20,6 +22,31 @@ export const CreateRoutineScreen = ({ route, navigation }) => {
   const [exercises, setExercises] = useState([
     { name: '', sets: '3', reps: '10', rest: '60', notes: '' },
   ]);
+  const [libraryModalVisible, setLibraryModalVisible] = useState(false);
+  const [currentEditingIndex, setCurrentEditingIndex] = useState(null);
+  const [exerciseLibrary, setExerciseLibrary] = useState([]);
+
+  useEffect(() => {
+    loadLibrary();
+  }, []);
+
+  const loadLibrary = async () => {
+    const library = await loadExerciseLibrary();
+    setExerciseLibrary(library);
+  };
+
+  const handleSelectFromLibrary = (index) => {
+    setCurrentEditingIndex(index);
+    setLibraryModalVisible(true);
+  };
+
+  const handleExerciseSelected = (exercise) => {
+    if (currentEditingIndex !== null) {
+      handleUpdateExercise(currentEditingIndex, 'name', exercise.name);
+    }
+    setLibraryModalVisible(false);
+    setCurrentEditingIndex(null);
+  };
 
   const handleAddExercise = () => {
     setExercises([...exercises, { name: '', sets: '3', reps: '10', rest: '60', notes: '' }]);
@@ -124,13 +151,21 @@ export const CreateRoutineScreen = ({ route, navigation }) => {
                 )}
               </View>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Exercise name *"
-                placeholderTextColor={theme.colors.textSecondary}
-                value={exercise.name}
-                onChangeText={(value) => handleUpdateExercise(index, 'name', value)}
-              />
+              <View style={styles.exerciseInputRow}>
+                <TextInput
+                  style={[styles.input, styles.exerciseNameInput]}
+                  placeholder="Exercise name *"
+                  placeholderTextColor={theme.colors.textSecondary}
+                  value={exercise.name}
+                  onChangeText={(value) => handleUpdateExercise(index, 'name', value)}
+                />
+                <TouchableOpacity
+                  style={styles.libraryButton}
+                  onPress={() => handleSelectFromLibrary(index)}
+                >
+                  <Text style={styles.libraryButtonText}>Library</Text>
+                </TouchableOpacity>
+              </View>
 
               <View style={styles.row}>
                 <View style={styles.smallInput}>
@@ -186,6 +221,58 @@ export const CreateRoutineScreen = ({ route, navigation }) => {
       <View style={styles.footer}>
         <Button title="Save Routine" onPress={handleSave} />
       </View>
+
+      <Modal
+        visible={libraryModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setLibraryModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select from Library</Text>
+              <TouchableOpacity onPress={() => setLibraryModalVisible(false)}>
+                <Text style={styles.modalCloseButton}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {exerciseLibrary.length === 0 ? (
+              <View style={styles.emptyLibrary}>
+                <Text style={styles.emptyLibraryText}>
+                  No exercises in library yet.
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setLibraryModalVisible(false);
+                    navigation.navigate('ExerciseLibrary');
+                  }}
+                >
+                  <Text style={styles.addToLibraryLink}>Go to Library</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <FlatList
+                data={exerciseLibrary}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.libraryExerciseItem}
+                    onPress={() => handleExerciseSelected(item)}
+                  >
+                    <Text style={styles.libraryExerciseName}>{item.name}</Text>
+                    {item.category && (
+                      <Text style={styles.libraryExerciseCategory}>
+                        {item.category}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -241,6 +328,27 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontWeight: '600',
   },
+  exerciseInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+  },
+  exerciseNameInput: {
+    flex: 1,
+  },
+  libraryButton: {
+    backgroundColor: theme.colors.background,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  libraryButtonText: {
+    fontSize: theme.typography.caption.fontSize,
+    color: theme.colors.text,
+    fontWeight: '600',
+  },
   exerciseCard: {
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.md,
@@ -283,5 +391,66 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: theme.colors.surface,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '70%',
+    paddingBottom: theme.spacing.lg,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  modalTitle: {
+    fontSize: theme.typography.heading.fontSize,
+    fontWeight: theme.typography.heading.fontWeight,
+    color: theme.colors.text,
+  },
+  modalCloseButton: {
+    fontSize: 24,
+    color: theme.colors.text,
+    fontWeight: 'bold',
+  },
+  libraryExerciseItem: {
+    padding: theme.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  libraryExerciseName: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.text,
+    fontWeight: '600',
+    marginBottom: theme.spacing.xs,
+  },
+  libraryExerciseCategory: {
+    fontSize: theme.typography.caption.fontSize,
+    color: theme.colors.textSecondary,
+  },
+  emptyLibrary: {
+    padding: theme.spacing.xl,
+    alignItems: 'center',
+  },
+  emptyLibraryText: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  addToLibraryLink: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.text,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });

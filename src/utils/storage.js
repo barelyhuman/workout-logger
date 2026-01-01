@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ROUTINES_KEY = '@workout_routines';
 const WORKOUT_HISTORY_KEY = '@workout_history';
+const EXERCISE_LIBRARY_KEY = '@exercise_library';
 
 // Routines storage
 export const saveRoutines = async (routines) => {
@@ -43,6 +44,27 @@ export const loadWorkoutHistory = async () => {
     return data ? JSON.parse(data) : [];
   } catch (error) {
     console.error('Error loading workout history:', error);
+    return [];
+  }
+};
+
+// Exercise library storage
+export const saveExerciseLibrary = async (exercises) => {
+  try {
+    await AsyncStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(exercises));
+    return true;
+  } catch (error) {
+    console.error('Error saving exercise library:', error);
+    return false;
+  }
+};
+
+export const loadExerciseLibrary = async () => {
+  try {
+    const data = await AsyncStorage.getItem(EXERCISE_LIBRARY_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error loading exercise library:', error);
     return [];
   }
 };
