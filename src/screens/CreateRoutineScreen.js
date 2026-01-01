@@ -56,9 +56,9 @@ export const CreateRoutineScreen = ({ route, navigation }) => {
       description: description.trim(),
       exercises: exercises.map((ex) => ({
         name: ex.name.trim(),
-        sets: parseInt(ex.sets) || 3,
+        sets: parseInt(ex.sets, 10) || 3,
         reps: ex.reps.trim(),
-        rest: parseInt(ex.rest) || 60,
+        rest: parseInt(ex.rest, 10) || 60,
         notes: ex.notes.trim(),
       })),
       createdAt: new Date().toISOString(),

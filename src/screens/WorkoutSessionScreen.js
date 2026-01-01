@@ -43,6 +43,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
       // Start rest period
       setRestTimeRemaining(currentExercise.rest || 60);
       setIsResting(true);
+      // Move to next exercise after rest is handled by useEffect
     }
   };
 
@@ -78,8 +79,13 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     );
   };
 
+  // Helper function to determine when to automatically advance to the next exercise after rest period
+  const shouldMoveToNextExercise = () => {
+    return !isResting && restTimeRemaining === 0 && completedExercises.length > 0 && !isLastExercise;
+  };
+
   useEffect(() => {
-    if (!isResting && restTimeRemaining === 0 && completedExercises.length > 0 && !isLastExercise) {
+    if (shouldMoveToNextExercise()) {
       setCurrentExerciseIndex((prev) => prev + 1);
     }
   }, [isResting, restTimeRemaining]);
