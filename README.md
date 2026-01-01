@@ -2,6 +2,14 @@
 
 A minimal, monochromatic workout logging app for Android that helps you create and track calisthenics workout routines locally on your phone.
 
+## Download
+
+[![Build Android APK](https://github.com/barelyhuman/workout-logger/actions/workflows/build-android.yml/badge.svg)](https://github.com/barelyhuman/workout-logger/actions/workflows/build-android.yml)
+
+**Latest APK**: [Download from Releases](https://github.com/barelyhuman/workout-logger/releases/latest)
+
+APK builds are automatically created on every push to the main branch and tagged by date. Download the latest release to install the app on your Android device.
+
 ## Features
 
 - 🏋️ **Pre-loaded Calisthenics Routines**: 5 well-researched full body workout routines (Beginner, Intermediate, Advanced, Upper Body, Lower Body)
