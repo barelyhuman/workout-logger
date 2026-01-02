@@ -10,8 +10,8 @@ This app follows a **responsive and compact variation of SWISS Design principles
 ### Core SWISS Design Characteristics
 
 1. **Grid-Based Layout System**
-   - Uses an 8pt grid system with 4pt base unit (compact mode)
-   - All spacing values are multiples of 4pt: 4, 8, 12, 16, 20, 24, 32
+   - Uses a 4pt grid system (all spacing is multiples of 4)
+   - All spacing values are multiples of 4: 4, 8, 12, 16, 20, 24, 32
    - Consistent spacing creates visual rhythm and hierarchy
    - Use theme spacing constants: `theme.spacing.xs` (4), `sm` (8), `md` (12), `lg` (16), `xl` (20), `xxl` (24), `xxxl` (32)
 
@@ -37,7 +37,7 @@ This app follows a **responsive and compact variation of SWISS Design principles
 
 5. **Responsive & Compact**
    - Optimized for mobile screens with compact spacing
-   - Touch-friendly minimum sizes (44pt minimum touch targets)
+   - Touch-friendly minimum sizes (44px minimum touch targets)
    - Efficient use of screen real estate
    - Scalable and adaptable layouts
 
@@ -46,7 +46,7 @@ This app follows a **responsive and compact variation of SWISS Design principles
 - **ALWAYS** use the 4pt grid system for all spacing and sizing
 - **ALWAYS** use theme typography constants for text styling
 - **ALWAYS** maintain the monochromatic color scheme (no colors)
-- **ALWAYS** ensure minimum 44pt touch targets for interactive elements
+- **ALWAYS** ensure minimum 44px touch targets for interactive elements
 - **NEVER** add decorative elements that don't serve a functional purpose
 - **NEVER** use colors outside the monochromatic palette
 - **NEVER** hardcode spacing or typography values - use theme constants
@@ -54,11 +54,11 @@ This app follows a **responsive and compact variation of SWISS Design principles
 ### Theme Structure Reflects SWISS Principles
 
 The `src/utils/theme.js` file is structured to enforce SWISS Design:
-- `colors`: Monochromatic palette only
-- `spacing`: 4pt grid system (xs to xxxl)
-- `borderRadius`: Compact scale (3, 6, 8, 12)
-- `typography`: Complete typographic scale with letter spacing and line heights
-- `elevation`: Subtle shadows using monochrome opacity
+- `colors`: Monochromatic palette only (black, white, grays)
+- `spacing`: 4pt grid system - all values are multiples of 4 (xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32)
+- `borderRadius`: Compact scale (sm: 3, md: 6, lg: 8, xl: 12)
+- `typography`: Complete typographic scale with precise letter spacing and line heights
+- `elevation`: Subtle depth using monochrome shadows with opacity
 
 When making any UI changes, ask yourself:
 1. Does this follow the grid system?
