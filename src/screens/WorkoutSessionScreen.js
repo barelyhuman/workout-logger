@@ -40,7 +40,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     // Initialize actual reps array with planned reps as default
     const sets = currentExercise.sets || 3;
     const plannedReps = currentExercise.reps || '10';
-    const defaultReps = Array(sets).fill(plannedReps.toString());
+    const defaultReps = Array(sets).fill(String(plannedReps));
     setActualReps(defaultReps);
     setShowRepsModal(true);
   };
@@ -125,6 +125,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     return !isResting && restTimeRemaining === 0 && (completedExercises.length + skippedExercises.length) > 0 && !isLastExercise;
   };
 
+  // Only trigger when rest state changes - dependencies are intentionally limited
   useEffect(() => {
     if (shouldMoveToNextExercise()) {
       setCurrentExerciseIndex((prev) => prev + 1);

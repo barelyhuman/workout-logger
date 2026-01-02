@@ -76,7 +76,7 @@ export const HistoryScreen = ({ navigation }) => {
                 >
                   • {exercise.name}{exercise.skipped === true ? ' (skipped)' : ''}
                 </Text>
-                {!exercise.skipped && exercise.actualReps && (
+                {!exercise.skipped && exercise.actualReps && Array.isArray(exercise.actualReps) && (
                   <Text style={styles.repsDetail}>
                     {`  Actual: ${exercise.actualReps.join(', ')} | Target: ${exercise.sets} × ${exercise.reps}`}
                   </Text>
