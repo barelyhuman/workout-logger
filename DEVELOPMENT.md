@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
 ### Adding a New Screen
 1. Create new file in `src/screens/`
 2. Import necessary dependencies
-3. Create component with SafeAreaView and StatusBar
+3. Create component with SafeAreaView (from `react-native-safe-area-context`) and StatusBar
 4. Add styles using theme
 5. Register in navigation stack in `App.js`
 
