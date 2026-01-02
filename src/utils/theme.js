@@ -14,7 +14,7 @@ export const theme = {
     success: '#ffffff',
     disabled: '#666666',
   },
-  // 8pt grid system - compact mode (4pt base, multiples of 4)
+  // 4pt grid system - all spacing values are multiples of 4pt
   spacing: {
     xs: 4,    // 0.5 unit
     sm: 8,    // 1 unit
