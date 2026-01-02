@@ -103,11 +103,11 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     setRestTimeRemaining(0);
     
     // Check if we're resting between sets or between exercises
-    if (isLastSet && currentExerciseReps.length === totalSets) {
-      // We're between exercises, move to next exercise
+    if (isLastSet && currentExerciseReps.length === currentSetIndex + 1) {
+      // We're between exercises (just completed last set), move to next exercise
       setCurrentExerciseIndex((prev) => prev + 1);
-    } else if (currentExerciseReps.length > currentSetIndex) {
-      // We're between sets, move to next set
+    } else if (currentExerciseReps.length === currentSetIndex + 1) {
+      // We're between sets (just completed a non-last set), move to next set
       setCurrentSetIndex((prev) => prev + 1);
     }
   };
@@ -144,12 +144,12 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   // Helper function to determine when to automatically advance after rest period
   const shouldMoveToNextExercise = () => {
     // Only move to next exercise if we just completed the last set of current exercise
-    return !isResting && restTimeRemaining === 0 && isLastSet && currentExerciseReps.length === totalSets && !isLastExercise;
+    return !isResting && restTimeRemaining === 0 && isLastSet && currentExerciseReps.length === currentSetIndex + 1 && !isLastExercise;
   };
 
   const shouldMoveToNextSet = () => {
     // Move to next set if we just completed a set that wasn't the last
-    return !isResting && restTimeRemaining === 0 && !isLastSet && currentExerciseReps.length > currentSetIndex;
+    return !isResting && restTimeRemaining === 0 && !isLastSet && currentExerciseReps.length === currentSetIndex + 1;
   };
 
   useEffect(() => {
@@ -229,7 +229,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
                   </View>
                 ))}
               </View>
-              {currentExerciseReps.length > 0 && (
+              {currentExerciseReps.length > 0 && currentSetIndex > 0 && (
                 <View style={styles.completedSetsInfo}>
                   <Text style={styles.completedSetsText}>
                     Completed: {currentExerciseReps.slice(0, currentSetIndex).map((r, i) => `Set ${i + 1}: ${r}`).join(', ')}
