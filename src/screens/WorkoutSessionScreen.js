@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Alert, Modal, TextInput, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { saveWorkoutToHistory } from '../utils/storage';
@@ -12,7 +12,10 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   const [isResting, setIsResting] = useState(false);
   const [restTimeRemaining, setRestTimeRemaining] = useState(0);
   const [completedExercises, setCompletedExercises] = useState([]);
+  const [skippedExercises, setSkippedExercises] = useState([]);
   const [startTime] = useState(new Date());
+  const [showRepsModal, setShowRepsModal] = useState(false);
+  const [actualReps, setActualReps] = useState([]);
 
   const currentExercise = routine.exercises[currentExerciseIndex];
   const isLastExercise = currentExerciseIndex === routine.exercises.length - 1;
@@ -34,16 +37,49 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   }, [isResting, restTimeRemaining]);
 
   const handleCompleteExercise = () => {
-    const updatedCompleted = [...completedExercises, currentExercise];
+    // Initialize actual reps array with planned reps as default
+    const sets = currentExercise.sets || 3;
+    const plannedReps = currentExercise.reps || '10';
+    const defaultReps = Array(sets).fill(plannedReps.toString());
+    setActualReps(defaultReps);
+    setShowRepsModal(true);
+  };
+
+  const handleConfirmReps = () => {
+    const exerciseWithReps = { 
+      ...currentExercise, 
+      skipped: false,
+      actualReps: actualReps 
+    };
+    const updatedCompleted = [...completedExercises, exerciseWithReps];
     setCompletedExercises(updatedCompleted);
+    setShowRepsModal(false);
 
     if (isLastExercise) {
-      handleFinishWorkout(updatedCompleted);
+      handleFinishWorkout(updatedCompleted, skippedExercises);
     } else {
       // Start rest period
       setRestTimeRemaining(currentExercise.rest || 60);
       setIsResting(true);
       // Move to next exercise after rest is handled by useEffect
+    }
+  };
+
+  const handleUpdateRep = (index, value) => {
+    const updated = [...actualReps];
+    updated[index] = value;
+    setActualReps(updated);
+  };
+
+  const handleSkipExercise = () => {
+    const updatedSkipped = [...skippedExercises, { ...currentExercise, skipped: true }];
+    setSkippedExercises(updatedSkipped);
+
+    if (isLastExercise) {
+      handleFinishWorkout(completedExercises, updatedSkipped);
+    } else {
+      // Move to next exercise without rest
+      setCurrentExerciseIndex((prev) => prev + 1);
     }
   };
 
@@ -53,14 +89,17 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     setCurrentExerciseIndex((prev) => prev + 1);
   };
 
-  const handleFinishWorkout = async (completed) => {
+  const handleFinishWorkout = async (completed, skipped = []) => {
     const endTime = new Date();
     const duration = Math.round((endTime - startTime) / 1000 / 60); // minutes
+
+    // Combine completed and skipped exercises
+    const allExercises = [...completed, ...skipped];
 
     const workout = {
       id: Date.now().toString(),
       routineName: routine.name,
-      exercises: completed,
+      exercises: allExercises,
       duration,
       completedAt: endTime.toISOString(),
     };
@@ -69,7 +108,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
 
     Alert.alert(
       'Workout Complete! 💪',
-      `Great job! You completed ${completed.length} exercises in ${duration} minutes.`,
+      `Great job! You completed ${completed.length} exercises${skipped.length > 0 ? ` and skipped ${skipped.length}` : ''} in ${duration} minutes.`,
       [
         {
           text: 'OK',
@@ -80,8 +119,10 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   };
 
   // Helper function to determine when to automatically advance to the next exercise after rest period
+  // Check for (completedExercises.length + skippedExercises.length) > 0 prevents automatic advancement
+  // to next exercise on component initial mount before user has interacted with any exercise
   const shouldMoveToNextExercise = () => {
-    return !isResting && restTimeRemaining === 0 && completedExercises.length > 0 && !isLastExercise;
+    return !isResting && restTimeRemaining === 0 && (completedExercises.length + skippedExercises.length) > 0 && !isLastExercise;
   };
 
   useEffect(() => {
@@ -137,12 +178,66 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
         {isResting ? (
           <Button title="Skip Rest" onPress={handleSkipRest} />
         ) : (
-          <Button
-            title={isLastExercise ? 'Finish Workout' : 'Complete Exercise'}
-            onPress={handleCompleteExercise}
-          />
+          <View style={styles.buttonContainer}>
+            <Button
+              title={isLastExercise ? 'Finish Workout' : 'Complete Exercise'}
+              onPress={handleCompleteExercise}
+            />
+            <Button
+              title="Skip Exercise"
+              onPress={handleSkipExercise}
+              variant="outline"
+            />
+          </View>
         )}
       </View>
+
+      <Modal
+        visible={showRepsModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowRepsModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Enter Reps Completed</Text>
+            <Text style={styles.modalSubtitle}>
+              {currentExercise?.name} - {currentExercise?.sets} sets
+            </Text>
+            
+            <ScrollView style={styles.modalScroll}>
+              {actualReps.map((reps, index) => (
+                <View key={index} style={styles.repInputRow}>
+                  <Text style={styles.setLabel}>Set {index + 1}:</Text>
+                  <TextInput
+                    style={styles.repInput}
+                    value={reps}
+                    onChangeText={(value) => handleUpdateRep(index, value)}
+                    keyboardType="numeric"
+                    placeholder="Reps"
+                    placeholderTextColor={theme.colors.textSecondary}
+                  />
+                </View>
+              ))}
+            </ScrollView>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.modalButtonOutline]}
+                onPress={() => setShowRepsModal(false)}
+              >
+                <Text style={styles.modalButtonTextOutline}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.modalButtonPrimary]}
+                onPress={handleConfirmReps}
+              >
+                <Text style={styles.modalButtonTextPrimary}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -218,5 +313,93 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
+  },
+  buttonContainer: {
+    gap: theme.spacing.sm,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: theme.spacing.lg,
+  },
+  modalContent: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: 12,
+    padding: theme.spacing.lg,
+    width: '100%',
+    maxHeight: '80%',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  modalTitle: {
+    fontSize: theme.typography.heading.fontSize,
+    fontWeight: theme.typography.heading.fontWeight,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
+    textAlign: 'center',
+  },
+  modalSubtitle: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.lg,
+    textAlign: 'center',
+  },
+  modalScroll: {
+    maxHeight: 300,
+  },
+  repInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+    gap: theme.spacing.md,
+  },
+  setLabel: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.text,
+    fontWeight: '600',
+    width: 60,
+  },
+  repInput: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: 8,
+    padding: theme.spacing.md,
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.text,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.lg,
+  },
+  modalButton: {
+    flex: 1,
+    padding: theme.spacing.md,
+    borderRadius: 8,
+    alignItems: 'center',
+    minHeight: 50,
+    justifyContent: 'center',
+  },
+  modalButtonOutline: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: theme.colors.border,
+  },
+  modalButtonPrimary: {
+    backgroundColor: theme.colors.primary,
+  },
+  modalButtonTextOutline: {
+    color: theme.colors.text,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: '600',
+  },
+  modalButtonTextPrimary: {
+    color: theme.colors.background,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: '600',
   },
 });
