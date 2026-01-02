@@ -25,7 +25,8 @@ This is a React Native Expo app for Android that helps users track calisthenics 
 ### Component Structure
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 // Other imports

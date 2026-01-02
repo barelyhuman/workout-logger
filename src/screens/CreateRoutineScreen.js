@@ -4,13 +4,13 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  SafeAreaView,
   TextInput,
   TouchableOpacity,
   Alert,
   Modal,
   FlatList,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadRoutines, saveRoutines, loadExerciseLibrary } from '../utils/storage';
