@@ -8,7 +8,7 @@ export const RoutineCard = ({ routine, onPress, onLongPress }) => {
       style={styles.card}
       onPress={onPress}
       onLongPress={onLongPress}
-      activeOpacity={0.85}
+      activeOpacity={0.7}
     >
       <Text style={styles.title}>{routine.name}</Text>
       {routine.description && (
