@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Alert, Modal, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, Modal, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { saveWorkoutToHistory } from '../utils/storage';
@@ -136,9 +137,14 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.progressContainer}>
-          <Text style={styles.progressText}>
-            Exercise {currentExerciseIndex + 1} of {routine.exercises.length}
-          </Text>
+          <View style={styles.progressHeader}>
+            <Text style={styles.progressText}>
+              Exercise {currentExerciseIndex + 1} of {routine.exercises.length}
+            </Text>
+            <Text style={styles.progressPercentage}>
+              {Math.round(((currentExerciseIndex + 1) / routine.exercises.length) * 100)}%
+            </Text>
+          </View>
           <View style={styles.progressBar}>
             <View
               style={[
@@ -154,7 +160,9 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
         {isResting ? (
           <View style={styles.restContainer}>
             <Text style={styles.restTitle}>Rest Time</Text>
-            <Text style={styles.restTimer}>{restTimeRemaining}s</Text>
+            <Text style={styles.restTimer}>{restTimeRemaining}</Text>
+            <Text style={styles.restUnit}>seconds</Text>
+            <View style={styles.restDivider} />
             <Text style={styles.restNext}>
               Next: {routine.exercises[currentExerciseIndex + 1]?.name}
             </Text>
@@ -166,17 +174,21 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
           </View>
         )}
 
-        <View style={styles.upcomingContainer}>
-          <Text style={styles.upcomingTitle}>Upcoming</Text>
-          {routine.exercises.slice(currentExerciseIndex + 1).map((exercise, index) => (
-            <ExerciseItem key={index} exercise={exercise} showSets={false} />
-          ))}
-        </View>
+        {routine.exercises.slice(currentExerciseIndex + 1).length > 0 && (
+          <View style={styles.upcomingContainer}>
+            <Text style={styles.upcomingTitle}>Upcoming</Text>
+            <View style={styles.upcomingList}>
+              {routine.exercises.slice(currentExerciseIndex + 1).map((exercise, index) => (
+                <ExerciseItem key={index} exercise={exercise} showSets={false} />
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
 
       <View style={styles.footer}>
         {isResting ? (
-          <Button title="Skip Rest" onPress={handleSkipRest} />
+          <Button title="Skip Rest" onPress={handleSkipRest} variant="outline" />
         ) : (
           <View style={styles.buttonContainer}>
             <Button
@@ -253,43 +265,80 @@ const styles = StyleSheet.create({
   progressContainer: {
     marginBottom: theme.spacing.lg,
   },
-  progressText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.textSecondary,
+  progressHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: theme.spacing.sm,
+  },
+  progressText: {
+    fontSize: theme.typography.bodyMedium.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.bodyMedium.letterSpacing,
+    color: theme.colors.textSecondary,
+  },
+  progressPercentage: {
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    color: theme.colors.text,
   },
   progressBar: {
     height: 8,
     backgroundColor: theme.colors.surface,
-    borderRadius: 4,
+    borderRadius: theme.borderRadius.md,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
     backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.md,
   },
   restContainer: {
     backgroundColor: theme.colors.surface,
-    padding: theme.spacing.xl,
-    borderRadius: 8,
+    padding: theme.spacing.lg,
+    borderRadius: theme.borderRadius.lg,
     alignItems: 'center',
     marginBottom: theme.spacing.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   restTitle: {
-    fontSize: theme.typography.heading.fontSize,
-    fontWeight: theme.typography.heading.fontWeight,
-    color: theme.colors.text,
+    fontSize: theme.typography.subheading.fontSize,
+    fontWeight: theme.typography.subheading.fontWeight,
+    letterSpacing: theme.typography.subheading.letterSpacing,
+    lineHeight: theme.typography.subheading.lineHeight,
+    color: theme.colors.textSecondary,
     marginBottom: theme.spacing.md,
+    textTransform: 'uppercase',
   },
   restTimer: {
-    fontSize: 64,
-    fontWeight: 'bold',
+    fontSize: 56,
+    fontWeight: '700',
+    letterSpacing: -0.5,
     color: theme.colors.text,
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.xs,
+  },
+  restUnit: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.lg,
+  },
+  restDivider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: theme.colors.border,
+    marginBottom: theme.spacing.lg,
   },
   restNext: {
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.textSecondary,
+    textAlign: 'center',
   },
   exerciseContainer: {
     marginBottom: theme.spacing.lg,
@@ -297,17 +346,25 @@ const styles = StyleSheet.create({
   exerciseTitle: {
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.md,
   },
   upcomingContainer: {
-    marginTop: theme.spacing.lg,
+    marginTop: theme.spacing.md,
   },
   upcomingTitle: {
     fontSize: theme.typography.subheading.fontSize,
     fontWeight: theme.typography.subheading.fontWeight,
+    letterSpacing: theme.typography.subheading.letterSpacing,
+    lineHeight: theme.typography.subheading.lineHeight,
     color: theme.colors.textSecondary,
     marginBottom: theme.spacing.md,
+    textTransform: 'uppercase',
+  },
+  upcomingList: {
+    // Gap handled by marginBottom in ExerciseItem
   },
   footer: {
     padding: theme.spacing.md,
@@ -315,18 +372,18 @@ const styles = StyleSheet.create({
     borderTopColor: theme.colors.border,
   },
   buttonContainer: {
-    gap: theme.spacing.sm,
+    // Gap handled by marginBottom in Button
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing.lg,
   },
   modalContent: {
     backgroundColor: theme.colors.surface,
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.xl,
     padding: theme.spacing.lg,
     width: '100%',
     maxHeight: '80%',
@@ -336,12 +393,17 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.xs,
     textAlign: 'center',
   },
   modalSubtitle: {
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.textSecondary,
     marginBottom: theme.spacing.lg,
     textAlign: 'center',
@@ -353,36 +415,39 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: theme.spacing.md,
-    gap: theme.spacing.md,
   },
   setLabel: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
     color: theme.colors.text,
-    fontWeight: '600',
     width: 60,
+    marginRight: theme.spacing.md,
   },
   repInput: {
     flex: 1,
     backgroundColor: theme.colors.background,
     borderWidth: 1,
     borderColor: theme.colors.border,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
     color: theme.colors.text,
   },
   modalButtons: {
     flexDirection: 'row',
-    gap: theme.spacing.sm,
     marginTop: theme.spacing.lg,
   },
   modalButton: {
     flex: 1,
-    padding: theme.spacing.md,
-    borderRadius: 8,
+    padding: theme.spacing.sm,
+    borderRadius: theme.borderRadius.lg,
     alignItems: 'center',
-    minHeight: 50,
+    minHeight: 44,
     justifyContent: 'center',
+    marginHorizontal: theme.spacing.xs,
   },
   modalButtonOutline: {
     backgroundColor: 'transparent',
@@ -394,12 +459,14 @@ const styles = StyleSheet.create({
   },
   modalButtonTextOutline: {
     color: theme.colors.text,
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600',
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
   },
   modalButtonTextPrimary: {
     color: theme.colors.background,
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600',
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
   },
 });

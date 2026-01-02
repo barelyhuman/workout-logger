@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadWorkoutHistory } from '../utils/storage';
@@ -104,9 +105,14 @@ export const HistoryScreen = ({ navigation }) => {
         refreshing={loading}
         onRefresh={loadHistory}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            No workout history yet. Complete a workout to see it here!
-          </Text>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              No workout history yet.
+            </Text>
+            <Text style={styles.emptySubtext}>
+              Complete a workout to see it here!
+            </Text>
+          </View>
         }
       />
     </SafeAreaView>
@@ -127,6 +133,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: theme.typography.title.fontSize,
     fontWeight: theme.typography.title.fontWeight,
+    letterSpacing: theme.typography.title.letterSpacing,
+    lineHeight: theme.typography.title.lineHeight,
     color: theme.colors.text,
   },
   list: {
@@ -135,45 +143,67 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.md,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+    ...theme.elevation.low,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: theme.spacing.sm,
+    alignItems: 'flex-start',
+    marginBottom: theme.spacing.md,
+    paddingBottom: theme.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
   },
   routineName: {
     fontSize: theme.typography.subheading.fontSize,
     fontWeight: theme.typography.subheading.fontWeight,
+    letterSpacing: theme.typography.subheading.letterSpacing,
+    lineHeight: theme.typography.subheading.lineHeight,
     color: theme.colors.text,
     flex: 1,
+    marginRight: theme.spacing.sm,
   },
   date: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
-    marginLeft: theme.spacing.sm,
   },
   stats: {
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
   },
   statText: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
   },
   exercisesList: {
-    marginTop: theme.spacing.sm,
+    marginTop: theme.spacing.xs,
+    paddingTop: theme.spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
   },
   exerciseText: {
-    fontSize: theme.typography.small.fontSize,
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
-    marginBottom: 2,
+    marginBottom: theme.spacing.xs,
   },
   repsDetail: {
-    fontSize: theme.typography.small.fontSize - 1,
+    fontSize: theme.typography.small.fontSize,
+    fontWeight: theme.typography.small.fontWeight,
+    letterSpacing: theme.typography.small.letterSpacing,
+    lineHeight: theme.typography.small.lineHeight,
     color: theme.colors.textSecondary,
     marginLeft: theme.spacing.md,
     marginBottom: theme.spacing.xs,
@@ -183,10 +213,25 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     opacity: 0.5,
   },
+  emptyContainer: {
+    paddingVertical: theme.spacing.xxl,
+    alignItems: 'center',
+  },
   emptyText: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    lineHeight: theme.typography.bodySemibold.lineHeight,
+    color: theme.colors.text,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xs,
+  },
+  emptySubtext: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginTop: theme.spacing.xl,
   },
 });

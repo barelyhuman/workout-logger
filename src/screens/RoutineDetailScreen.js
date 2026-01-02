@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { ExerciseItem } from '../components/ExerciseItem';
@@ -16,16 +17,20 @@ export const RoutineDetailScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{routine.name}</Text>
-        {routine.description && (
-          <Text style={styles.description}>{routine.description}</Text>
-        )}
+        <View style={styles.header}>
+          <Text style={styles.title}>{routine.name}</Text>
+          {routine.description && (
+            <Text style={styles.description}>{routine.description}</Text>
+          )}
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Exercises</Text>
-          {routine.exercises.map((exercise, index) => (
-            <ExerciseItem key={index} exercise={exercise} />
-          ))}
+          <View style={styles.exercisesList}>
+            {routine.exercises.map((exercise, index) => (
+              <ExerciseItem key={index} exercise={exercise} />
+            ))}
+          </View>
         </View>
       </ScrollView>
 
@@ -44,16 +49,23 @@ const styles = StyleSheet.create({
   content: {
     padding: theme.spacing.md,
   },
+  header: {
+    marginBottom: theme.spacing.lg,
+  },
   title: {
     fontSize: theme.typography.title.fontSize,
     fontWeight: theme.typography.title.fontWeight,
+    letterSpacing: theme.typography.title.letterSpacing,
+    lineHeight: theme.typography.title.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.sm,
   },
   description: {
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.lg,
   },
   section: {
     marginTop: theme.spacing.md,
@@ -61,8 +73,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.md,
+  },
+  exercisesList: {
+    // Gap handled by marginBottom in ExerciseItem
   },
   footer: {
     padding: theme.spacing.md,
