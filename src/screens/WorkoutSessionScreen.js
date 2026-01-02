@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
   },
   repInput: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.surfaceLight,
     borderWidth: 1,
     borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.lg,
