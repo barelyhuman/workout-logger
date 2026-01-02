@@ -66,10 +66,6 @@ export const HistoryScreen = ({ navigation }) => {
         </View>
         <View style={styles.exercisesList}>
           {item.exercises.map((exercise, index) => {
-            const repsDisplay = exercise.actualReps 
-              ? `(${exercise.actualReps.join(', ')})` 
-              : `(${exercise.sets} × ${exercise.reps})`;
-            
             return (
               <View key={index}>
                 <Text 

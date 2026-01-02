@@ -40,7 +40,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     // Initialize actual reps array with planned reps as default
     const sets = currentExercise.sets || 3;
     const plannedReps = currentExercise.reps || '10';
-    const defaultReps = Array(sets).fill(plannedReps);
+    const defaultReps = Array(sets).fill(plannedReps.toString());
     setActualReps(defaultReps);
     setShowRepsModal(true);
   };
