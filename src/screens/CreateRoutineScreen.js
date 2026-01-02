@@ -106,7 +106,9 @@ export const CreateRoutineScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Create Routine</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Create Routine</Text>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.label}>Routine Name *</Text>
@@ -289,11 +291,15 @@ const styles = StyleSheet.create({
   content: {
     padding: theme.spacing.md,
   },
+  header: {
+    marginBottom: theme.spacing.lg,
+  },
   title: {
     fontSize: theme.typography.title.fontSize,
     fontWeight: theme.typography.title.fontWeight,
+    letterSpacing: theme.typography.title.letterSpacing,
+    lineHeight: theme.typography.title.lineHeight,
     color: theme.colors.text,
-    marginBottom: theme.spacing.lg,
   },
   section: {
     marginBottom: theme.spacing.lg,
@@ -307,10 +313,15 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
     color: theme.colors.text,
   },
   label: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodyMedium.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.bodyMedium.letterSpacing,
+    lineHeight: theme.typography.bodyMedium.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.sm,
   },
@@ -318,19 +329,23 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     color: theme.colors.text,
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
     padding: theme.spacing.md,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
   textArea: {
     height: 80,
     textAlignVertical: 'top',
+    paddingTop: theme.spacing.sm,
   },
   addButton: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
     color: theme.colors.text,
-    fontWeight: '600',
   },
   exerciseInputRow: {
     flexDirection: 'row',
@@ -344,36 +359,45 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
   libraryButtonText: {
-    fontSize: theme.typography.caption.fontSize,
+    fontSize: theme.typography.captionMedium.fontSize,
+    fontWeight: theme.typography.captionMedium.fontWeight,
+    letterSpacing: theme.typography.captionMedium.letterSpacing,
     color: theme.colors.text,
-    fontWeight: '600',
   },
   exerciseCard: {
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.md,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
     marginBottom: theme.spacing.md,
+    ...theme.elevation.low,
   },
   exerciseHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
   },
   exerciseNumber: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    lineHeight: theme.typography.bodySemibold.lineHeight,
     color: theme.colors.text,
-    fontWeight: '600',
   },
   removeButton: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
     color: theme.colors.textSecondary,
   },
   row: {
@@ -388,6 +412,9 @@ const styles = StyleSheet.create({
   },
   smallLabel: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
     marginBottom: theme.spacing.xs,
   },
@@ -398,14 +425,14 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: theme.colors.surface,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '70%',
+    borderTopLeftRadius: theme.borderRadius.xl,
+    borderTopRightRadius: theme.borderRadius.xl,
+    maxHeight: '75%',
     paddingBottom: theme.spacing.lg,
   },
   modalHeader: {
@@ -419,12 +446,15 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
     color: theme.colors.text,
   },
   modalCloseButton: {
-    fontSize: 24,
+    fontSize: 28,
     color: theme.colors.text,
-    fontWeight: 'bold',
+    fontWeight: '300',
+    lineHeight: 28,
   },
   libraryExerciseItem: {
     padding: theme.spacing.md,
@@ -432,29 +462,38 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.border,
   },
   libraryExerciseName: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    lineHeight: theme.typography.bodySemibold.lineHeight,
     color: theme.colors.text,
-    fontWeight: '600',
     marginBottom: theme.spacing.xs,
   },
   libraryExerciseCategory: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
   },
   emptyLibrary: {
-    padding: theme.spacing.xl,
+    padding: theme.spacing.xxl,
     alignItems: 'center',
   },
   emptyLibraryText: {
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.textSecondary,
     textAlign: 'center',
     marginBottom: theme.spacing.md,
   },
   addToLibraryLink: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
     color: theme.colors.text,
-    fontWeight: '600',
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.text,
   },

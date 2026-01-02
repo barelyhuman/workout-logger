@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadRoutines, saveRoutines } from '../utils/storage';
 import { defaultRoutines } from '../data/defaultRoutines';
 import { RoutineCard } from '../components/RoutineCard';
 import { Button } from '../components/Button';
+import {SafeAreaView} from "react-native-safe-area-context"
 
 export const HomeScreen = ({ navigation }) => {
   const [routines, setRoutines] = useState([]);
@@ -60,17 +61,18 @@ export const HomeScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <Text style={styles.title}>Workout Logger</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => navigation.navigate('ExerciseLibrary')}
+            activeOpacity={0.7}
           >
             <Text style={styles.headerButtonText}>Library</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => navigation.navigate('History')}
+            activeOpacity={0.7}
           >
             <Text style={styles.headerButtonText}>History</Text>
           </TouchableOpacity>
@@ -85,7 +87,10 @@ export const HomeScreen = ({ navigation }) => {
         refreshing={loading}
         onRefresh={loadRoutinesData}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No routines yet. Create your first one!</Text>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No routines yet.</Text>
+            <Text style={styles.emptySubtext}>Create your first one to get started!</Text>
+          </View>
         }
       />
 
@@ -116,28 +121,48 @@ const styles = StyleSheet.create({
   title: {
     fontSize: theme.typography.title.fontSize,
     fontWeight: theme.typography.title.fontWeight,
+    letterSpacing: theme.typography.title.letterSpacing,
+    lineHeight: theme.typography.title.lineHeight,
     color: theme.colors.text,
   },
   headerButtons: {
     flexDirection: 'row',
   },
   headerButton: {
-    padding: theme.spacing.sm,
-    marginLeft: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    paddingHorizontal: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
+    marginLeft: theme.spacing.xs,
   },
   headerButtonText: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodyMedium.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.bodyMedium.letterSpacing,
     color: theme.colors.text,
-    fontWeight: '600',
   },
   list: {
     padding: theme.spacing.md,
   },
+  emptyContainer: {
+    paddingVertical: theme.spacing.xxl,
+    alignItems: 'center',
+  },
   emptyText: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    lineHeight: theme.typography.bodySemibold.lineHeight,
+    color: theme.colors.text,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xs,
+  },
+  emptySubtext: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginTop: theme.spacing.xl,
   },
   footer: {
     padding: theme.spacing.md,

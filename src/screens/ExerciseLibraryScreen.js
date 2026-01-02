@@ -131,6 +131,9 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
+      <View style={styles.header}>
+        <Text style={styles.title}>Exercise Library</Text>
+      </View>
 
       <FlatList
         data={exercises}
@@ -140,9 +143,14 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         refreshing={loading}
         onRefresh={loadExercisesData}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            No exercises in library. Add your first one!
-          </Text>
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              No exercises in library.
+            </Text>
+            <Text style={styles.emptySubtext}>
+              Add your first one to get started!
+            </Text>
+          </View>
         }
       />
 
@@ -185,18 +193,17 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalButton}
+              <Button
+                title="Cancel"
                 onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.modalButtonPrimary]}
+                variant="outline"
+                style={[styles.modalButton, styles.modalButtonLeft]}
+              />
+              <Button
+                title="Save"
                 onPress={handleSaveExercise}
-              >
-                <Text style={[styles.modalButtonText, styles.modalButtonPrimaryText]}>Save</Text>
-              </TouchableOpacity>
+                style={[styles.modalButton, styles.modalButtonRight]}
+              />
             </View>
           </View>
         </View>
@@ -210,6 +217,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
+  header: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  title: {
+    fontSize: theme.typography.title.fontSize,
+    fontWeight: theme.typography.title.fontWeight,
+    letterSpacing: theme.typography.title.letterSpacing,
+    lineHeight: theme.typography.title.lineHeight,
+    color: theme.colors.text,
+  },
   list: {
     padding: theme.spacing.md,
   },
@@ -219,36 +239,60 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.md,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
     marginBottom: theme.spacing.sm,
+    ...theme.elevation.low,
   },
   exerciseContent: {
     flex: 1,
   },
   exerciseName: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    lineHeight: theme.typography.bodySemibold.lineHeight,
     color: theme.colors.text,
-    fontWeight: '600',
     marginBottom: theme.spacing.xs,
   },
   exerciseCategory: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
   },
   deleteButton: {
     padding: theme.spacing.sm,
+    paddingLeft: theme.spacing.md,
   },
   deleteButtonText: {
     fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
     color: theme.colors.textSecondary,
   },
+  emptyContainer: {
+    paddingVertical: theme.spacing.xxl,
+    alignItems: 'center',
+  },
   emptyText: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    lineHeight: theme.typography.bodySemibold.lineHeight,
+    color: theme.colors.text,
+    textAlign: 'center',
+    marginBottom: theme.spacing.xs,
+  },
+  emptySubtext: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
     textAlign: 'center',
-    marginTop: theme.spacing.xl,
   },
   footer: {
     padding: theme.spacing.md,
@@ -257,13 +301,13 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
     backgroundColor: theme.colors.surface,
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.xl,
     padding: theme.spacing.lg,
     width: '85%',
     maxWidth: 400,
@@ -271,6 +315,8 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.lg,
   },
@@ -278,7 +324,10 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   label: {
-    fontSize: theme.typography.body.fontSize,
+    fontSize: theme.typography.bodyMedium.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.bodyMedium.letterSpacing,
+    lineHeight: theme.typography.bodyMedium.lineHeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.sm,
   },
@@ -286,8 +335,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     color: theme.colors.text,
     fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
     padding: theme.spacing.md,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
@@ -298,22 +349,11 @@ const styles = StyleSheet.create({
   },
   modalButton: {
     flex: 1,
-    padding: theme.spacing.md,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    marginHorizontal: theme.spacing.xs,
-    alignItems: 'center',
   },
-  modalButtonPrimary: {
-    backgroundColor: theme.colors.text,
+  modalButtonLeft: {
+    marginRight: theme.spacing.xs,
   },
-  modalButtonText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-    fontWeight: '600',
-  },
-  modalButtonPrimaryText: {
-    color: theme.colors.background,
+  modalButtonRight: {
+    marginLeft: theme.spacing.xs,
   },
 });

@@ -11,7 +11,7 @@ export const Button = ({ title, onPress, variant = 'primary', disabled = false, 
       style={[buttonStyle, disabled && styles.buttonDisabled, style]}
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.7}
+      activeOpacity={0.8}
     >
       {loading ? (
         <ActivityIndicator color={variant === 'outline' ? theme.colors.text : theme.colors.background} />
@@ -25,38 +25,41 @@ export const Button = ({ title, onPress, variant = 'primary', disabled = false, 
 const styles = StyleSheet.create({
   buttonPrimary: {
     backgroundColor: theme.colors.primary,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
-    borderRadius: 8,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 50,
+    minHeight: 44,
+    ...theme.elevation.low,
   },
   buttonOutline: {
     backgroundColor: 'transparent',
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
-    borderRadius: 8,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 2,
     borderColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 50,
+    minHeight: 44,
   },
   buttonDisabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   textPrimary: {
     color: theme.colors.background,
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600',
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
   },
   textOutline: {
     color: theme.colors.text,
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600',
+    fontSize: theme.typography.bodySemibold.fontSize,
+    fontWeight: theme.typography.bodySemibold.fontWeight,
+    letterSpacing: theme.typography.bodySemibold.letterSpacing,
   },
   textDisabled: {
-    color: theme.colors.disabled,
+    color: theme.colors.textTertiary,
   },
 });
