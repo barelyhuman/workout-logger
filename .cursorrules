@@ -3,6 +3,70 @@
 ## Project Overview
 This is a React Native Expo app for Android that helps users track calisthenics workouts. The app uses a strict monochromatic (black/white/gray only) theme and stores all data locally using AsyncStorage.
 
+## Design Philosophy - SWISS Design Principles
+
+This app follows a **responsive and compact variation of SWISS Design principles**. All UI design decisions must align with these core principles:
+
+### Core SWISS Design Characteristics
+
+1. **Grid-Based Layout System**
+   - Uses an 8pt grid system with 4pt base unit (compact mode)
+   - All spacing values are multiples of 4pt: 4, 8, 12, 16, 20, 24, 32
+   - Consistent spacing creates visual rhythm and hierarchy
+   - Use theme spacing constants: `theme.spacing.xs` (4), `sm` (8), `md` (12), `lg` (16), `xl` (20), `xxl` (24), `xxxl` (32)
+
+2. **Minimalism & Reduction to Essentials**
+   - Strictly monochromatic palette (black/white/grays only)
+   - No decorative elements or unnecessary visual flourishes
+   - Every UI element serves a clear functional purpose
+   - Clean, uncluttered interfaces with strong focus on content
+   - Generous use of whitespace (negative space) for breathing room
+
+3. **Typography-Focused Design**
+   - Typography is the primary design element
+   - Carefully crafted font sizes, weights, letter spacing, and line heights
+   - Clear typographic hierarchy (title → heading → subheading → body → caption → small)
+   - Compact mobile-optimized sizes for responsive design
+   - All typography uses theme constants for consistency
+
+4. **Functional & Purposeful**
+   - Form follows function - design serves usability
+   - Clear visual hierarchy guides user attention
+   - Intuitive interactions without unnecessary complexity
+   - Every element has a clear purpose and meaning
+
+5. **Responsive & Compact**
+   - Optimized for mobile screens with compact spacing
+   - Touch-friendly minimum sizes (44pt minimum touch targets)
+   - Efficient use of screen real estate
+   - Scalable and adaptable layouts
+
+### Design Implementation Rules
+
+- **ALWAYS** use the 4pt grid system for all spacing and sizing
+- **ALWAYS** use theme typography constants for text styling
+- **ALWAYS** maintain the monochromatic color scheme (no colors)
+- **ALWAYS** ensure minimum 44pt touch targets for interactive elements
+- **NEVER** add decorative elements that don't serve a functional purpose
+- **NEVER** use colors outside the monochromatic palette
+- **NEVER** hardcode spacing or typography values - use theme constants
+
+### Theme Structure Reflects SWISS Principles
+
+The `src/utils/theme.js` file is structured to enforce SWISS Design:
+- `colors`: Monochromatic palette only
+- `spacing`: 4pt grid system (xs to xxxl)
+- `borderRadius`: Compact scale (3, 6, 8, 12)
+- `typography`: Complete typographic scale with letter spacing and line heights
+- `elevation`: Subtle shadows using monochrome opacity
+
+When making any UI changes, ask yourself:
+1. Does this follow the grid system?
+2. Is this minimal and essential?
+3. Does the typography create clear hierarchy?
+4. Is this functional and purposeful?
+5. Is this responsive and compact for mobile?
+
 ## Critical Requirements
 
 ### Theme - STRICTLY MONOCHROMATIC
@@ -173,10 +237,12 @@ const handleSave = async (newData) => {
 4. Use `@` prefix for storage keys
 
 ### What NOT to Do
-- ❌ Don't add colors (strictly monochromatic)
+- ❌ Don't add colors (strictly monochromatic - SWISS Design principle)
 - ❌ Don't use class components
-- ❌ Don't hardcode colors or spacing values
+- ❌ Don't hardcode colors or spacing values (violates grid system - SWISS Design principle)
 - ❌ Don't create inline styles (use StyleSheet.create)
+- ❌ Don't add decorative elements without functional purpose (violates minimalism - SWISS Design principle)
+- ❌ Don't use spacing values that aren't multiples of 4pt (violates grid system - SWISS Design principle)
 - ❌ Don't add network calls (app is offline-only)
 - ❌ Don't modify default routines structure without updating all references
 - ❌ Don't skip error handling in async functions
