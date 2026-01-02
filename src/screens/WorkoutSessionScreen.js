@@ -12,6 +12,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   const [isResting, setIsResting] = useState(false);
   const [restTimeRemaining, setRestTimeRemaining] = useState(0);
   const [completedExercises, setCompletedExercises] = useState([]);
+  const [skippedExercises, setSkippedExercises] = useState([]);
   const [startTime] = useState(new Date());
 
   const currentExercise = routine.exercises[currentExerciseIndex];
@@ -34,16 +35,28 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   }, [isResting, restTimeRemaining]);
 
   const handleCompleteExercise = () => {
-    const updatedCompleted = [...completedExercises, currentExercise];
+    const updatedCompleted = [...completedExercises, { ...currentExercise, skipped: false }];
     setCompletedExercises(updatedCompleted);
 
     if (isLastExercise) {
-      handleFinishWorkout(updatedCompleted);
+      handleFinishWorkout(updatedCompleted, skippedExercises);
     } else {
       // Start rest period
       setRestTimeRemaining(currentExercise.rest || 60);
       setIsResting(true);
       // Move to next exercise after rest is handled by useEffect
+    }
+  };
+
+  const handleSkipExercise = () => {
+    const updatedSkipped = [...skippedExercises, { ...currentExercise, skipped: true }];
+    setSkippedExercises(updatedSkipped);
+
+    if (isLastExercise) {
+      handleFinishWorkout(completedExercises, updatedSkipped);
+    } else {
+      // Move to next exercise without rest
+      setCurrentExerciseIndex((prev) => prev + 1);
     }
   };
 
@@ -53,14 +66,17 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
     setCurrentExerciseIndex((prev) => prev + 1);
   };
 
-  const handleFinishWorkout = async (completed) => {
+  const handleFinishWorkout = async (completed, skipped = []) => {
     const endTime = new Date();
     const duration = Math.round((endTime - startTime) / 1000 / 60); // minutes
+
+    // Combine completed and skipped exercises
+    const allExercises = [...completed, ...skipped];
 
     const workout = {
       id: Date.now().toString(),
       routineName: routine.name,
-      exercises: completed,
+      exercises: allExercises,
       duration,
       completedAt: endTime.toISOString(),
     };
@@ -69,7 +85,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
 
     Alert.alert(
       'Workout Complete! 💪',
-      `Great job! You completed ${completed.length} exercises in ${duration} minutes.`,
+      `Great job! You completed ${completed.length} exercises${skipped.length > 0 ? ` and skipped ${skipped.length}` : ''} in ${duration} minutes.`,
       [
         {
           text: 'OK',
@@ -81,7 +97,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
 
   // Helper function to determine when to automatically advance to the next exercise after rest period
   const shouldMoveToNextExercise = () => {
-    return !isResting && restTimeRemaining === 0 && completedExercises.length > 0 && !isLastExercise;
+    return !isResting && restTimeRemaining === 0 && (completedExercises.length + skippedExercises.length) > 0 && !isLastExercise;
   };
 
   useEffect(() => {
@@ -137,10 +153,17 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
         {isResting ? (
           <Button title="Skip Rest" onPress={handleSkipRest} />
         ) : (
-          <Button
-            title={isLastExercise ? 'Finish Workout' : 'Complete Exercise'}
-            onPress={handleCompleteExercise}
-          />
+          <View style={styles.buttonContainer}>
+            <Button
+              title={isLastExercise ? 'Finish Workout' : 'Complete Exercise'}
+              onPress={handleCompleteExercise}
+            />
+            <Button
+              title="Skip Exercise"
+              onPress={handleSkipExercise}
+              variant="outline"
+            />
+          </View>
         )}
       </View>
     </SafeAreaView>
@@ -218,5 +241,8 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
+  },
+  buttonContainer: {
+    gap: theme.spacing.sm,
   },
 });

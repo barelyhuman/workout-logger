@@ -36,26 +36,37 @@ export const HistoryScreen = ({ navigation }) => {
     }
   };
 
-  const renderWorkout = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.routineName}>{item.routineName}</Text>
-        <Text style={styles.date}>{formatDate(item.completedAt)}</Text>
-      </View>
-      <View style={styles.stats}>
-        <Text style={styles.statText}>
-          {item.exercises.length} exercises • {item.duration} min
-        </Text>
-      </View>
-      <View style={styles.exercisesList}>
-        {item.exercises.map((exercise, index) => (
-          <Text key={index} style={styles.exerciseText}>
-            • {exercise.name}
+  const renderWorkout = ({ item }) => {
+    const completedCount = item.exercises.filter(ex => !ex.skipped).length;
+    const skippedCount = item.exercises.filter(ex => ex.skipped).length;
+    
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.routineName}>{item.routineName}</Text>
+          <Text style={styles.date}>{formatDate(item.completedAt)}</Text>
+        </View>
+        <View style={styles.stats}>
+          <Text style={styles.statText}>
+            {completedCount} completed{skippedCount > 0 ? ` • ${skippedCount} skipped` : ''} • {item.duration} min
           </Text>
-        ))}
+        </View>
+        <View style={styles.exercisesList}>
+          {item.exercises.map((exercise, index) => (
+            <Text 
+              key={index} 
+              style={[
+                styles.exerciseText,
+                exercise.skipped && styles.skippedExerciseText
+              ]}
+            >
+              • {exercise.name}{exercise.skipped ? ' (skipped)' : ''}
+            </Text>
+          ))}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -139,6 +150,10 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.small.fontSize,
     color: theme.colors.textSecondary,
     marginBottom: 2,
+  },
+  skippedExerciseText: {
+    textDecorationLine: 'line-through',
+    opacity: 0.5,
   },
   emptyText: {
     fontSize: theme.typography.body.fontSize,
