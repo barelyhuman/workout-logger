@@ -14,7 +14,7 @@ export const theme = {
     success: '#ffffff',
     disabled: '#666666',
   },
-  // 4pt grid system - all spacing values are multiples of 4pt
+  // 4px grid system - all spacing values are multiples of 4px
   spacing: {
     xs: 4,    // 0.5 unit
     sm: 8,    // 1 unit

@@ -10,7 +10,7 @@ This app follows a **responsive and compact variation of SWISS Design principles
 ### Core SWISS Design Characteristics
 
 1. **Grid-Based Layout System**
-   - Uses a 4pt grid system (all spacing is multiples of 4)
+   - Uses a 4px grid system (all spacing is multiples of 4 pixels)
    - All spacing values are multiples of 4: 4, 8, 12, 16, 20, 24, 32
    - Consistent spacing creates visual rhythm and hierarchy
    - Use theme spacing constants: `theme.spacing.xs` (4), `sm` (8), `md` (12), `lg` (16), `xl` (20), `xxl` (24), `xxxl` (32)
@@ -43,7 +43,7 @@ This app follows a **responsive and compact variation of SWISS Design principles
 
 ### Design Implementation Rules
 
-- **ALWAYS** use the 4pt grid system for all spacing and sizing
+- **ALWAYS** use the 4px grid system for all spacing and sizing
 - **ALWAYS** use theme typography constants for text styling
 - **ALWAYS** maintain the monochromatic color scheme (no colors)
 - **ALWAYS** ensure minimum 44px touch targets for interactive elements
@@ -55,7 +55,7 @@ This app follows a **responsive and compact variation of SWISS Design principles
 
 The `src/utils/theme.js` file is structured to enforce SWISS Design:
 - `colors`: Monochromatic palette only (black, white, grays)
-- `spacing`: 4pt grid system - all values are multiples of 4 (xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32)
+- `spacing`: 4px grid system - all values are multiples of 4px (xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32)
 - `borderRadius`: Compact scale (sm: 3, md: 6, lg: 8, xl: 12)
 - `typography`: Complete typographic scale with precise letter spacing and line heights
 - `elevation`: Subtle depth using monochrome shadows with opacity
@@ -242,7 +242,7 @@ const handleSave = async (newData) => {
 - ❌ Don't hardcode colors or spacing values (violates grid system - SWISS Design principle)
 - ❌ Don't create inline styles (use StyleSheet.create)
 - ❌ Don't add decorative elements without functional purpose (violates minimalism - SWISS Design principle)
-- ❌ Don't use spacing values that aren't multiples of 4pt (violates grid system - SWISS Design principle)
+- ❌ Don't use spacing values that aren't multiples of 4px (violates grid system - SWISS Design principle)
 - ❌ Don't add network calls (app is offline-only)
 - ❌ Don't modify default routines structure without updating all references
 - ❌ Don't skip error handling in async functions
