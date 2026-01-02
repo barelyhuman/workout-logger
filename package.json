@@ -4,9 +4,12 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start",
+    "start:clear": "expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "clean": "rm -rf node_modules && npm install",
+    "doctor": "npx expo-doctor"
   },
   "dependencies": {
     "expo": "~54.0.30",

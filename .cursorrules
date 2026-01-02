@@ -1,0 +1,195 @@
+# Workout Logger - Cursor AI Rules
+
+## Project Overview
+This is a React Native Expo app for Android that helps users track calisthenics workouts. The app uses a strict monochromatic (black/white/gray only) theme and stores all data locally using AsyncStorage.
+
+## Critical Requirements
+
+### Theme - STRICTLY MONOCHROMATIC
+- **NEVER** use colors other than black, white, and shades of gray
+- All colors must come from `src/utils/theme.js`
+- Background: `#000000` (black)
+- Surface: `#1a1a1a` or `#2a2a2a` (dark gray)
+- Text: `#ffffff` (white) or `#999999` (gray)
+- Borders: `#333333` (dark gray)
+- **DO NOT** add any colored accents, highlights, or UI elements
+
+### Code Style
+- Use functional components with React hooks (no class components)
+- Use ES6+ features (arrow functions, destructuring, template literals)
+- One component per file
+- PascalCase for component files (e.g., `HomeScreen.js`)
+- camelCase for utility files (e.g., `storage.js`)
+- Export components as named exports: `export const ComponentName = () => {}`
+
+### Component Structure
+```javascript
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { theme } from '../utils/theme';
+// Other imports
+
+export const ComponentName = ({ navigation, prop1 }) => {
+  // 1. State declarations
+  const [state, setState] = useState(initialValue);
+  
+  // 2. Effects
+  useEffect(() => {
+    // Effect logic
+  }, [dependencies]);
+  
+  // 3. Handlers
+  const handleAction = () => {
+    // Handler logic
+  };
+  
+  // 4. Render
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="light" />
+      {/* JSX content */}
+    </SafeAreaView>
+  );
+};
+
+// Styles at bottom
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+});
+```
+
+### File Organization
+- **Components**: `src/components/` - Reusable UI components
+- **Screens**: `src/screens/` - Full screen components (use SafeAreaView + StatusBar)
+- **Utils**: `src/utils/` - Utilities (storage, theme)
+- **Data**: `src/data/` - Default data (routines, exercises)
+
+### Styling Rules
+- Always use `StyleSheet.create()` for styles
+- Import theme from `src/utils/theme.js`
+- Use theme spacing: `theme.spacing.xs`, `sm`, `md`, `lg`, `xl`
+- Use theme typography: `theme.typography.title`, `heading`, `body`, etc.
+- Keep styles at the bottom of the file
+- Use theme colors only (no hardcoded colors)
+
+### Storage Patterns
+- All storage functions are in `src/utils/storage.js`
+- Use AsyncStorage for all persistence
+- Storage keys use `@` prefix (e.g., `@workout_routines`)
+- Always handle errors with try/catch
+- Return consistent data types (arrays return `[]` on error, booleans return `false`)
+
+### Navigation
+- Navigation setup is in `App.js`
+- Use React Navigation 7.x Native Stack
+- Screens receive `navigation` prop
+- Navigate with: `navigation.navigate('ScreenName', { params })`
+- Register new screens in `App.js` Stack.Navigator
+
+### Data Models
+
+**Routine Object:**
+```javascript
+{
+  id: string,              // Unique identifier (timestamp or UUID)
+  name: string,            // Routine name
+  description: string,      // Optional description
+  exercises: [             // Array of exercise objects
+    {
+      name: string,         // Exercise name
+      sets: number,         // Number of sets
+      reps: string,         // Reps (can be range "8-12" or duration "30s")
+      rest: number,         // Rest time in seconds
+      notes: string         // Optional exercise notes
+    }
+  ],
+  createdAt: string        // ISO 8601 timestamp
+}
+```
+
+**Workout History Object:**
+```javascript
+{
+  id: string,              // Unique identifier
+  routineName: string,     // Name of completed routine
+  exercises: [],          // Array of completed exercises
+  duration: number,        // Duration in minutes
+  completedAt: string      // ISO 8601 timestamp
+}
+```
+
+### Common Patterns
+
+**Loading Data:**
+```javascript
+const [data, setData] = useState([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  loadData();
+}, []);
+
+const loadData = async () => {
+  setLoading(true);
+  const result = await loadFromStorage();
+  setData(result);
+  setLoading(false);
+};
+```
+
+**Saving Data:**
+```javascript
+const handleSave = async (newData) => {
+  const success = await saveToStorage(newData);
+  if (success) {
+    setData(newData);
+  }
+};
+```
+
+### Adding New Features
+
+**New Screen:**
+1. Create file in `src/screens/ScreenName.js`
+2. Use SafeAreaView + StatusBar
+3. Import and use theme
+4. Register in `App.js` Stack.Navigator
+
+**New Component:**
+1. Create file in `src/components/ComponentName.js`
+2. Export as named export
+3. Use theme for styling
+4. Keep it reusable and focused
+
+**New Storage Function:**
+1. Add to `src/utils/storage.js`
+2. Use AsyncStorage with try/catch
+3. Return consistent types
+4. Use `@` prefix for storage keys
+
+### What NOT to Do
+- ❌ Don't add colors (strictly monochromatic)
+- ❌ Don't use class components
+- ❌ Don't hardcode colors or spacing values
+- ❌ Don't create inline styles (use StyleSheet.create)
+- ❌ Don't add network calls (app is offline-only)
+- ❌ Don't modify default routines structure without updating all references
+- ❌ Don't skip error handling in async functions
+
+### Testing Considerations
+- Test on Android (primary platform)
+- All data persists locally (no backend)
+- Default routines load on first launch
+- Workout history accumulates over time
+
+## Quick Reference
+- Theme: `src/utils/theme.js`
+- Storage: `src/utils/storage.js`
+- Default Routines: `src/data/defaultRoutines.js`
+- Navigation: `App.js`
+- Main Entry: `index.js`
+
