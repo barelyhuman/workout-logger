@@ -65,17 +65,29 @@ export const HistoryScreen = ({ navigation }) => {
           </Text>
         </View>
         <View style={styles.exercisesList}>
-          {item.exercises.map((exercise, index) => (
-            <Text 
-              key={index} 
-              style={[
-                styles.exerciseText,
-                exercise.skipped === true && styles.skippedExerciseText
-              ]}
-            >
-              • {exercise.name}{exercise.skipped === true ? ' (skipped)' : ''}
-            </Text>
-          ))}
+          {item.exercises.map((exercise, index) => {
+            const repsDisplay = exercise.actualReps 
+              ? `(${exercise.actualReps.join(', ')})` 
+              : `(${exercise.sets} × ${exercise.reps})`;
+            
+            return (
+              <View key={index}>
+                <Text 
+                  style={[
+                    styles.exerciseText,
+                    exercise.skipped === true && styles.skippedExerciseText
+                  ]}
+                >
+                  • {exercise.name}{exercise.skipped === true ? ' (skipped)' : ''}
+                </Text>
+                {!exercise.skipped && exercise.actualReps && (
+                  <Text style={styles.repsDetail}>
+                    {`  Actual: ${exercise.actualReps.join(', ')} | Target: ${exercise.sets} × ${exercise.reps}`}
+                  </Text>
+                )}
+              </View>
+            );
+          })}
         </View>
       </View>
     );
@@ -163,6 +175,13 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.small.fontSize,
     color: theme.colors.textSecondary,
     marginBottom: 2,
+  },
+  repsDetail: {
+    fontSize: theme.typography.small.fontSize - 1,
+    color: theme.colors.textSecondary,
+    marginLeft: theme.spacing.md,
+    marginBottom: theme.spacing.xs,
+    opacity: 0.8,
   },
   skippedExerciseText: {
     textDecorationLine: 'line-through',
