@@ -14,8 +14,9 @@ The latest APK builds are automatically generated and available in the [Releases
 
 - 🏋️ **Pre-loaded Calisthenics Routines**: 5 well-researched full body workout routines (Beginner, Intermediate, Advanced, Upper Body, Lower Body)
 - ✏️ **Create Custom Routines**: Build your own workout routines with custom exercises
-- 📱 **Workout Sessions**: Track your workouts in real-time with rest timers
-- 📊 **Workout History**: View all your completed workouts
+- 📱 **Per-Set Tracking**: Complete and track each set individually with rest timers between sets
+- ⏱️ **Smart Rest Timers**: Automatic rest timers after each set and exercise
+- 📊 **Workout History**: View all your completed workouts with per-set rep tracking
 - 💾 **Local Storage**: All data is stored locally on your device
 - 🎨 **Minimal Design**: Clean, monochromatic black and white theme
 - 📴 **Offline First**: No internet connection required
@@ -67,9 +68,20 @@ Or scan the QR code with the Expo Go app on your Android device.
 1. Select a routine from the home screen
 2. Review the exercises in the routine
 3. Tap "Start Workout"
-4. Complete each exercise
-5. Rest timers will automatically start between exercises
+4. **Complete each set individually**:
+   - Tap "Complete Set" when you finish a set
+   - Enter the actual reps you completed
+   - Rest timer automatically starts (e.g., 90 seconds)
+   - Visual progress shows completed vs remaining sets
+5. After rest, continue to the next set or exercise
 6. Complete the workout and view your summary
+
+**Per-Set Tracking Features**:
+- See which set you're on (e.g., "Set 2 of 3")
+- Visual indicators for completed, current, and pending sets
+- View completed reps for previous sets
+- Skip rest if you're ready to continue
+- Automatic advancement after rest periods
 
 ### Creating a Custom Routine
 1. Tap "Create New Routine" on the home screen

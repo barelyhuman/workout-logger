@@ -58,40 +58,101 @@ npm start
 ---
 
 #### 3. Workout Session Screen Tests
-**Test 3.1: Exercise Progress**
-- [ ] Start a workout
-- [ ] Verify current exercise is displayed prominently
-- [ ] Verify progress bar shows current position
-- [ ] Verify "Exercise X of Y" counter is correct
-- [ ] Tap "Complete Exercise"
-- [ ] Verify rest timer starts
-- [ ] Verify rest time counts down from configured seconds
 
-**Test 3.2: Rest Timer**
-- [ ] Complete an exercise
-- [ ] Verify rest screen appears with:
+**Test 3.1: Per-Set Tracking - Set Progress Display**
+- [ ] Start a workout with an exercise that has 3 sets
+- [ ] Verify set progress section shows "Set 1 of 3"
+- [ ] Verify 3 circular set indicators are displayed
+- [ ] Verify Set 1 indicator has white border (current)
+- [ ] Verify Sets 2-3 indicators are gray (pending)
+- [ ] Verify no completed sets info shown initially
+
+**Test 3.2: Per-Set Tracking - Complete First Set**
+- [ ] Tap "Complete Set" button on Set 1
+- [ ] Verify rep entry modal appears
+- [ ] Verify modal shows "Set 1 of 3"
+- [ ] Verify input is pre-filled with planned reps
+- [ ] Enter actual reps (e.g., "12")
+- [ ] Tap "Confirm"
+- [ ] Verify rest timer starts immediately
+- [ ] Verify rest timer shows configured rest time (e.g., 90 seconds)
+
+**Test 3.3: Per-Set Tracking - Rest Between Sets**
+- [ ] After completing Set 1, verify rest screen shows:
   - "Rest Time" title
   - Countdown timer
-  - Next exercise name
+  - "Next: Set 2 of [Exercise Name]"
 - [ ] Wait for timer to reach 0
-- [ ] Verify automatic progression to next exercise
-- [ ] Test "Skip Rest" button
-- [ ] Verify immediate progression to next exercise
+- [ ] Verify automatic progression to Set 2
+- [ ] Verify set indicator 1 is now white (completed)
+- [ ] Verify set indicator 2 has white border (current)
+- [ ] Verify completed sets info shows "Completed: Set 1: 12"
 
-**Test 3.3: Complete Workout**
-- [ ] Complete all exercises in a routine
-- [ ] On last exercise, verify "Finish Workout" button appears
+**Test 3.4: Per-Set Tracking - Skip Rest Between Sets**
+- [ ] Complete a set and start rest
+- [ ] Tap "Skip Rest" button
+- [ ] Verify immediate progression to next set
+- [ ] Verify set indicator advances correctly
+- [ ] Verify "Complete Set" button is ready
+
+**Test 3.5: Per-Set Tracking - Complete Middle Set**
+- [ ] On Set 2 of 3, tap "Complete Set"
+- [ ] Verify modal shows "Set 2 of 3"
+- [ ] Enter reps (e.g., "10")
+- [ ] Confirm
+- [ ] Verify rest timer starts
+- [ ] Verify "Next: Set 3 of [Exercise Name]"
+- [ ] After rest, verify completed sets shows "Completed: Set 1: 12, Set 2: 10"
+
+**Test 3.6: Per-Set Tracking - Complete Last Set of Exercise**
+- [ ] On Set 3 of 3, tap "Complete Set"
+- [ ] Verify modal shows "Set 3 of 3"
+- [ ] Enter reps (e.g., "11")
+- [ ] Confirm
+- [ ] Verify rest timer starts
+- [ ] Verify "Next: [Next Exercise Name]" (not another set)
+- [ ] After rest, verify automatic progression to next exercise
+- [ ] Verify new exercise shows "Set 1 of X"
+
+**Test 3.7: Per-Set Tracking - Last Set of Last Exercise**
+- [ ] Complete all sets of all exercises except the last set
+- [ ] On last set of last exercise, verify button shows "Finish Workout"
 - [ ] Tap "Finish Workout"
+- [ ] Enter reps and confirm
+- [ ] Verify completion dialog appears
+- [ ] Verify workout is saved to history
+
+**Test 3.8: Per-Set Tracking - Skip Entire Exercise**
+- [ ] During any set, tap "Skip Exercise"
+- [ ] Verify immediate move to next exercise (or finish if last)
+- [ ] Verify set tracking resets for new exercise
+- [ ] Verify skipped exercise is recorded
+
+**Test 3.9: Exercise Progress with Sets**
+- [ ] During workout, verify top progress bar shows exercise-level progress
+- [ ] Verify "Exercise X of Y" counter (not set counter)
+- [ ] Verify percentage calculation is exercise-based
+- [ ] Complete all sets of an exercise
+- [ ] Verify progress bar advances to next exercise
+
+**Test 3.10: Upcoming Exercises Display**
+- [ ] During workout, verify "Upcoming" section displays
+- [ ] Verify it shows remaining exercises (not sets)
+- [ ] Verify exercise details are visible
+- [ ] Verify upcoming section disappears on last exercise
+
+---
+
+#### 3b. Workout Session Screen Tests (Legacy - Exercise-Level)
+**Test 3.11: Complete Workout**
+- [ ] Complete all sets of all exercises in a routine
+- [ ] On last set of last exercise, verify "Finish Workout" button appears
+- [ ] Tap "Finish Workout" and confirm reps
 - [ ] Verify completion dialog shows:
   - Number of exercises completed
   - Total workout duration
 - [ ] Tap "OK"
 - [ ] Verify navigation back to Home screen
-
-**Test 3.4: Upcoming Exercises**
-- [ ] During workout, verify "Upcoming" section displays
-- [ ] Verify it shows remaining exercises
-- [ ] Verify exercise details are visible
 
 ---
 
