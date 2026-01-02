@@ -36,26 +36,58 @@ export const HistoryScreen = ({ navigation }) => {
     }
   };
 
-  const renderWorkout = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.routineName}>{item.routineName}</Text>
-        <Text style={styles.date}>{formatDate(item.completedAt)}</Text>
-      </View>
-      <View style={styles.stats}>
-        <Text style={styles.statText}>
-          {item.exercises.length} exercises • {item.duration} min
-        </Text>
-      </View>
-      <View style={styles.exercisesList}>
-        {item.exercises.map((exercise, index) => (
-          <Text key={index} style={styles.exerciseText}>
-            • {exercise.name}
+  const calculateExerciseCounts = (exercises) => {
+    return exercises.reduce(
+      (acc, ex) => {
+        if (ex.skipped === true) {
+          acc.skippedCount++;
+        } else {
+          acc.completedCount++;
+        }
+        return acc;
+      },
+      { completedCount: 0, skippedCount: 0 }
+    );
+  };
+
+  const renderWorkout = ({ item }) => {
+    const { completedCount, skippedCount } = calculateExerciseCounts(item.exercises);
+    
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <Text style={styles.routineName}>{item.routineName}</Text>
+          <Text style={styles.date}>{formatDate(item.completedAt)}</Text>
+        </View>
+        <View style={styles.stats}>
+          <Text style={styles.statText}>
+            {completedCount} completed{skippedCount > 0 ? ` • ${skippedCount} skipped` : ''} • {item.duration} min
           </Text>
-        ))}
+        </View>
+        <View style={styles.exercisesList}>
+          {item.exercises.map((exercise, index) => {
+            return (
+              <View key={index}>
+                <Text 
+                  style={[
+                    styles.exerciseText,
+                    exercise.skipped === true && styles.skippedExerciseText
+                  ]}
+                >
+                  • {exercise.name}{exercise.skipped === true ? ' (skipped)' : ''}
+                </Text>
+                {!exercise.skipped && exercise.actualReps && (
+                  <Text style={styles.repsDetail}>
+                    {`  Actual: ${exercise.actualReps.join(', ')} | Target: ${exercise.sets} × ${exercise.reps}`}
+                  </Text>
+                )}
+              </View>
+            );
+          })}
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -139,6 +171,17 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.small.fontSize,
     color: theme.colors.textSecondary,
     marginBottom: 2,
+  },
+  repsDetail: {
+    fontSize: theme.typography.small.fontSize - 1,
+    color: theme.colors.textSecondary,
+    marginLeft: theme.spacing.md,
+    marginBottom: theme.spacing.xs,
+    opacity: 0.8,
+  },
+  skippedExerciseText: {
+    textDecorationLine: 'line-through',
+    opacity: 0.5,
   },
   emptyText: {
     fontSize: theme.typography.body.fontSize,
