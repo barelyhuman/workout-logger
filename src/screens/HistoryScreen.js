@@ -36,8 +36,8 @@ export const HistoryScreen = ({ navigation }) => {
     }
   };
 
-  const renderWorkout = ({ item }) => {
-    const { completedCount, skippedCount } = item.exercises.reduce(
+  const calculateExerciseCounts = (exercises) => {
+    return exercises.reduce(
       (acc, ex) => {
         if (ex.skipped === true) {
           acc.skippedCount++;
@@ -48,6 +48,10 @@ export const HistoryScreen = ({ navigation }) => {
       },
       { completedCount: 0, skippedCount: 0 }
     );
+  };
+
+  const renderWorkout = ({ item }) => {
+    const { completedCount, skippedCount } = calculateExerciseCounts(item.exercises);
     
     return (
       <View style={styles.card}>
