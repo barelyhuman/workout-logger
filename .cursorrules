@@ -56,9 +56,11 @@ This app follows a **responsive and compact variation of SWISS Design principles
 The `src/utils/theme.js` file is structured to enforce SWISS Design:
 - `colors`: Monochromatic palette only (black, white, grays)
 - `spacing`: 4px grid system - all values are multiples of 4px (xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32)
-- `borderRadius`: Compact scale (sm: 3, md: 6, lg: 8, xl: 12)
+- `borderRadius`: Compact scale for subtle corners (sm: 3, md: 6, lg: 8, xl: 12) - optimized for mobile UI
 - `typography`: Complete typographic scale with precise letter spacing and line heights
 - `elevation`: Subtle depth using monochrome shadows with opacity
+
+Note: Border radius values are intentionally compact and not strictly multiples of 4px, as they're optimized for subtle, mobile-friendly rounded corners.
 
 When making any UI changes, ask yourself:
 1. Does this follow the grid system?
