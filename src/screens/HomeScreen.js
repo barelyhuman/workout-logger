@@ -61,12 +61,20 @@ export const HomeScreen = ({ navigation }) => {
       <StatusBar style="light" />
       <View style={styles.header}>
         <Text style={styles.title}>Workout Logger</Text>
-        <TouchableOpacity
-          style={styles.historyButton}
-          onPress={() => navigation.navigate('History')}
-        >
-          <Text style={styles.historyButtonText}>History</Text>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => navigation.navigate('ExerciseLibrary')}
+          >
+            <Text style={styles.headerButtonText}>Library</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => navigation.navigate('History')}
+          >
+            <Text style={styles.headerButtonText}>History</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <FlatList
@@ -110,10 +118,14 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.title.fontWeight,
     color: theme.colors.text,
   },
-  historyButton: {
-    padding: theme.spacing.sm,
+  headerButtons: {
+    flexDirection: 'row',
   },
-  historyButtonText: {
+  headerButton: {
+    padding: theme.spacing.sm,
+    marginLeft: theme.spacing.sm,
+  },
+  headerButtonText: {
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.text,
     fontWeight: '600',

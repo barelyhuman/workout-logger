@@ -9,6 +9,7 @@ import { RoutineDetailScreen } from './src/screens/RoutineDetailScreen';
 import { WorkoutSessionScreen } from './src/screens/WorkoutSessionScreen';
 import { CreateRoutineScreen } from './src/screens/CreateRoutineScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
+import { ExerciseLibraryScreen } from './src/screens/ExerciseLibraryScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,11 @@ export default function App() {
           name="History"
           component={HistoryScreen}
           options={{ title: 'History' }}
+        />
+        <Stack.Screen
+          name="ExerciseLibrary"
+          component={ExerciseLibraryScreen}
+          options={{ title: 'Exercise Library' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
