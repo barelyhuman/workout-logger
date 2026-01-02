@@ -39,7 +39,7 @@ export const HistoryScreen = ({ navigation }) => {
   const renderWorkout = ({ item }) => {
     const { completedCount, skippedCount } = item.exercises.reduce(
       (acc, ex) => {
-        if (ex.skipped) {
+        if (ex.skipped === true) {
           acc.skippedCount++;
         } else {
           acc.completedCount++;
@@ -66,10 +66,10 @@ export const HistoryScreen = ({ navigation }) => {
               key={index} 
               style={[
                 styles.exerciseText,
-                exercise.skipped && styles.skippedExerciseText
+                exercise.skipped === true && styles.skippedExerciseText
               ]}
             >
-              • {exercise.name}{exercise.skipped ? ' (skipped)' : ''}
+              • {exercise.name}{exercise.skipped === true ? ' (skipped)' : ''}
             </Text>
           ))}
         </View>
