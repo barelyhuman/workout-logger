@@ -96,6 +96,7 @@ export const WorkoutSessionScreen = ({ route, navigation }) => {
   };
 
   // Helper function to determine when to automatically advance to the next exercise after rest period
+  // Check for (completedExercises.length + skippedExercises.length) > 0 prevents auto-advance on initial mount
   const shouldMoveToNextExercise = () => {
     return !isResting && restTimeRemaining === 0 && (completedExercises.length + skippedExercises.length) > 0 && !isLastExercise;
   };
