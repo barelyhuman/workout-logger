@@ -1,50 +1,28 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ROUTINES_KEY = '@workout_routines';
-const WORKOUT_HISTORY_KEY = '@workout_history';
+const EXERCISE_LOG_KEY = '@exercise_log';
 const EXERCISE_LIBRARY_KEY = '@exercise_library';
 const EXERCISE_LIBRARY_INITIALIZED_KEY = '@exercise_library_initialized';
 
-// Routines storage
-export const saveRoutines = async (routines) => {
+// Exercise log storage (simplified logging)
+export const saveExerciseLog = async (exerciseLog) => {
   try {
-    await AsyncStorage.setItem(ROUTINES_KEY, JSON.stringify(routines));
+    const logs = await loadExerciseLogs();
+    logs.unshift(exerciseLog); // Add to beginning
+    await AsyncStorage.setItem(EXERCISE_LOG_KEY, JSON.stringify(logs));
     return true;
   } catch (error) {
-    console.error('Error saving routines:', error);
+    console.error('Error saving exercise log:', error);
     return false;
   }
 };
 
-export const loadRoutines = async () => {
+export const loadExerciseLogs = async () => {
   try {
-    const data = await AsyncStorage.getItem(ROUTINES_KEY);
+    const data = await AsyncStorage.getItem(EXERCISE_LOG_KEY);
     return data ? JSON.parse(data) : [];
   } catch (error) {
-    console.error('Error loading routines:', error);
-    return [];
-  }
-};
-
-// Workout history storage
-export const saveWorkoutToHistory = async (workout) => {
-  try {
-    const history = await loadWorkoutHistory();
-    history.unshift(workout); // Add to beginning
-    await AsyncStorage.setItem(WORKOUT_HISTORY_KEY, JSON.stringify(history));
-    return true;
-  } catch (error) {
-    console.error('Error saving workout to history:', error);
-    return false;
-  }
-};
-
-export const loadWorkoutHistory = async () => {
-  try {
-    const data = await AsyncStorage.getItem(WORKOUT_HISTORY_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch (error) {
-    console.error('Error loading workout history:', error);
+    console.error('Error loading exercise logs:', error);
     return [];
   }
 };

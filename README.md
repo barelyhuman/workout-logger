@@ -2,7 +2,7 @@
 
 [![Build Android APK](https://github.com/barelyhuman/workout-logger/actions/workflows/build-android.yml/badge.svg)](https://github.com/barelyhuman/workout-logger/actions/workflows/build-android.yml)
 
-A minimal, monochromatic workout logging app for Android that helps you create and track calisthenics workout routines locally on your phone.
+A minimal, monochromatic workout logging app for Android that helps you track calisthenics exercises by logging reps completed.
 
 ## Download
 
@@ -12,11 +12,10 @@ The latest APK builds are automatically generated and available in the [Releases
 
 ## Features
 
-- 🏋️ **Pre-loaded Calisthenics Routines**: 5 well-researched full body workout routines (Beginner, Intermediate, Advanced, Upper Body, Lower Body)
-- ✏️ **Create Custom Routines**: Build your own workout routines with custom exercises
-- 📱 **Per-Set Tracking**: Complete and track each set individually with rest timers between sets
-- ⏱️ **Smart Rest Timers**: Automatic rest timers after each set and exercise
-- 📊 **Workout History**: View all your completed workouts with per-set rep tracking
+- 🏋️ **Exercise Library**: Pre-loaded with 27 calisthenics exercises across Upper Body, Lower Body, and Core categories
+- ✏️ **Quick Exercise Logging**: Simply tap an exercise and log your reps
+- 📊 **Exercise History**: View all your logged exercises with timestamps
+- 🗂️ **Manage Exercise Library**: Add, edit, and delete exercises from your library
 - 💾 **Local Storage**: All data is stored locally on your device
 - 🎨 **Minimal Design**: Clean, monochromatic black and white theme
 - 📴 **Offline First**: No internet connection required
@@ -58,40 +57,22 @@ Or scan the QR code with the Expo Go app on your Android device.
 
 ## Usage
 
-### Home Screen
-- View all your workout routines
-- Access pre-loaded calisthenics routines
-- Create new custom routines
-- View workout history
+### Logging an Exercise
+1. Open the app to see your exercise library
+2. Tap on any exercise card
+3. Enter the number of reps you completed
+4. Tap "Log" to save
 
-### Starting a Workout
-1. Select a routine from the home screen
-2. Review the exercises in the routine
-3. Tap "Start Workout"
-4. **Complete each set individually**:
-   - Tap "Complete Set" when you finish a set
-   - Enter the actual reps you completed
-   - Rest timer automatically starts (e.g., 90 seconds)
-   - Visual progress shows completed vs remaining sets
-5. After rest, continue to the next set or exercise
-6. Complete the workout and view your summary
-
-**Per-Set Tracking Features**:
-- See which set you're on (e.g., "Set 2 of 3")
-- Visual indicators for completed, current, and pending sets
-- View completed reps for previous sets
-- Skip rest if you're ready to continue
-- Automatic advancement after rest periods
-
-### Creating a Custom Routine
-1. Tap "Create New Routine" on the home screen
-2. Enter routine name and description
-3. Add exercises with sets, reps, rest time, and notes
-4. Save your routine
+### Managing Exercise Library
+1. Tap "Library" in the top right
+2. Tap "Add Exercise" to create a new exercise
+3. Tap any exercise to edit it
+4. Tap "Delete" to remove an exercise
 
 ### Viewing History
-- Tap "History" in the top right of the home screen
-- View all your completed workouts with dates and durations
+1. Tap "History" in the top right
+2. View all your logged exercises with timestamps
+3. Pull down to refresh
 
 ## Project Structure
 
@@ -100,20 +81,25 @@ workout-logger/
 ├── src/
 │   ├── components/      # Reusable UI components
 │   ├── screens/         # App screens
-│   ├── data/           # Default workout routines
+│   │   ├── LogExerciseScreen.js
+│   │   ├── HistoryScreen.js
+│   │   └── ExerciseLibraryScreen.js
+│   ├── data/           # Default exercises
 │   └── utils/          # Utilities (storage, theme)
 ├── assets/             # App assets (icons, images)
 ├── App.js              # Main app entry point
 └── package.json        # Dependencies
 ```
 
-## Default Workout Routines
+## Default Exercise Library
 
-1. **Beginner Full Body** - Perfect for beginners with fundamental movements
-2. **Intermediate Full Body** - Challenging routine for intermediate practitioners
-3. **Advanced Full Body** - High intensity for advanced athletes
-4. **Upper Body Focus** - Concentrated upper body training
-5. **Lower Body Focus** - Leg and glute strength development
+The app comes pre-loaded with 27 exercises:
+
+**Upper Body**: Push-ups (various variations), Pull-ups, Chin-ups, Muscle-ups, Inverted Rows, Dips, and more
+
+**Lower Body**: Squats (various variations), Lunges, Single Leg Deadlifts, Calf Raises, Glute Bridges, Wall Sit
+
+**Core**: Plank, Lying Leg Raises, L-Sit Hold, Dragon Flags, Front Lever Hold
 
 ## License
 
