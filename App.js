@@ -4,10 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { theme } from './src/utils/theme';
 
 // Screens
-import { HomeScreen } from './src/screens/HomeScreen';
-import { RoutineDetailScreen } from './src/screens/RoutineDetailScreen';
-import { WorkoutSessionScreen } from './src/screens/WorkoutSessionScreen';
-import { CreateRoutineScreen } from './src/screens/CreateRoutineScreen';
+import { LogExerciseScreen } from './src/screens/LogExerciseScreen';
 import { HistoryScreen } from './src/screens/HistoryScreen';
 import { ExerciseLibraryScreen } from './src/screens/ExerciseLibraryScreen';
 
@@ -32,26 +29,8 @@ export default function App() {
       >
         <Stack.Screen
           name="Home"
-          component={HomeScreen}
+          component={LogExerciseScreen}
           options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="RoutineDetail"
-          component={RoutineDetailScreen}
-          options={{ title: 'Routine' }}
-        />
-        <Stack.Screen
-          name="WorkoutSession"
-          component={WorkoutSessionScreen}
-          options={{ 
-            title: 'Workout',
-            headerBackVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name="CreateRoutine"
-          component={CreateRoutineScreen}
-          options={{ title: 'Create Routine' }}
         />
         <Stack.Screen
           name="History"

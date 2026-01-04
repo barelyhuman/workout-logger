@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
-import { loadWorkoutHistory } from '../utils/storage';
+import { loadExerciseLogs } from '../utils/storage';
 
 export const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
@@ -13,9 +13,16 @@ export const HistoryScreen = ({ navigation }) => {
     loadHistory();
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadHistory();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const loadHistory = async () => {
     setLoading(true);
-    const data = await loadWorkoutHistory();
+    const data = await loadExerciseLogs();
     setHistory(data);
     setLoading(false);
   };
@@ -37,54 +44,29 @@ export const HistoryScreen = ({ navigation }) => {
     }
   };
 
-  const calculateExerciseCounts = (exercises) => {
-    return exercises.reduce(
-      (acc, ex) => {
-        if (ex.skipped === true) {
-          acc.skippedCount++;
-        } else {
-          acc.completedCount++;
-        }
-        return acc;
-      },
-      { completedCount: 0, skippedCount: 0 }
-    );
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const renderWorkout = ({ item }) => {
-    const { completedCount, skippedCount } = calculateExerciseCounts(item.exercises);
-    
+  const renderExerciseLog = ({ item }) => {
     return (
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.routineName}>{item.routineName}</Text>
-          <Text style={styles.date}>{formatDate(item.completedAt)}</Text>
+          <View style={styles.exerciseInfo}>
+            <Text style={styles.exerciseName}>{item.exerciseName}</Text>
+            {item.category && (
+              <Text style={styles.category}>{item.category}</Text>
+            )}
+          </View>
+          <View style={styles.dateInfo}>
+            <Text style={styles.date}>{formatDate(item.timestamp)}</Text>
+            <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
+          </View>
         </View>
-        <View style={styles.stats}>
-          <Text style={styles.statText}>
-            {completedCount} completed{skippedCount > 0 ? ` • ${skippedCount} skipped` : ''} • {item.duration} min
-          </Text>
-        </View>
-        <View style={styles.exercisesList}>
-          {item.exercises.map((exercise, index) => {
-            return (
-              <View key={index}>
-                <Text 
-                  style={[
-                    styles.exerciseText,
-                    exercise.skipped === true && styles.skippedExerciseText
-                  ]}
-                >
-                  • {exercise.name}{exercise.skipped === true ? ' (skipped)' : ''}
-                </Text>
-                {!exercise.skipped && exercise.actualReps && (
-                  <Text style={styles.repsDetail}>
-                    {`  Actual: ${exercise.actualReps.join(', ')} | Target: ${exercise.sets} × ${exercise.reps}`}
-                  </Text>
-                )}
-              </View>
-            );
-          })}
+        <View style={styles.repsContainer}>
+          <Text style={styles.repsLabel}>Reps:</Text>
+          <Text style={styles.repsValue}>{item.reps}</Text>
         </View>
       </View>
     );
@@ -94,12 +76,12 @@ export const HistoryScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.header}>
-        <Text style={styles.title}>Workout History</Text>
+        <Text style={styles.title}>Exercise History</Text>
       </View>
 
       <FlatList
         data={history}
-        renderItem={renderWorkout}
+        renderItem={renderExerciseLog}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
         refreshing={loading}
@@ -107,10 +89,10 @@ export const HistoryScreen = ({ navigation }) => {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              No workout history yet.
+              No exercise logs yet.
             </Text>
             <Text style={styles.emptySubtext}>
-              Complete a workout to see it here!
+              Log an exercise to see it here!
             </Text>
           </View>
         }
@@ -154,18 +136,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: theme.spacing.md,
-    paddingBottom: theme.spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
   },
-  routineName: {
+  exerciseInfo: {
+    flex: 1,
+    marginRight: theme.spacing.sm,
+  },
+  exerciseName: {
     fontSize: theme.typography.subheading.fontSize,
     fontWeight: theme.typography.subheading.fontWeight,
     letterSpacing: theme.typography.subheading.letterSpacing,
     lineHeight: theme.typography.subheading.lineHeight,
     color: theme.colors.text,
-    flex: 1,
-    marginRight: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
+  },
+  category: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    lineHeight: theme.typography.caption.lineHeight,
+    color: theme.colors.textSecondary,
+  },
+  dateInfo: {
+    alignItems: 'flex-end',
   },
   date: {
     fontSize: theme.typography.caption.fontSize,
@@ -173,45 +165,36 @@ const styles = StyleSheet.create({
     letterSpacing: theme.typography.caption.letterSpacing,
     lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
-  },
-  stats: {
-    marginBottom: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-  },
-  statText: {
-    fontSize: theme.typography.caption.fontSize,
-    fontWeight: theme.typography.caption.fontWeight,
-    letterSpacing: theme.typography.caption.letterSpacing,
-    lineHeight: theme.typography.caption.lineHeight,
-    color: theme.colors.textSecondary,
-  },
-  exercisesList: {
-    marginTop: theme.spacing.xs,
-    paddingTop: theme.spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-  },
-  exerciseText: {
-    fontSize: theme.typography.caption.fontSize,
-    fontWeight: theme.typography.caption.fontWeight,
-    letterSpacing: theme.typography.caption.letterSpacing,
-    lineHeight: theme.typography.caption.lineHeight,
-    color: theme.colors.textSecondary,
     marginBottom: theme.spacing.xs,
   },
-  repsDetail: {
+  time: {
     fontSize: theme.typography.small.fontSize,
     fontWeight: theme.typography.small.fontWeight,
     letterSpacing: theme.typography.small.letterSpacing,
     lineHeight: theme.typography.small.lineHeight,
-    color: theme.colors.textSecondary,
-    marginLeft: theme.spacing.md,
-    marginBottom: theme.spacing.xs,
-    opacity: 0.8,
+    color: theme.colors.textTertiary,
   },
-  skippedExerciseText: {
-    textDecorationLine: 'line-through',
-    opacity: 0.5,
+  repsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: theme.spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+  },
+  repsLabel: {
+    fontSize: theme.typography.bodyMedium.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.bodyMedium.letterSpacing,
+    lineHeight: theme.typography.bodyMedium.lineHeight,
+    color: theme.colors.textSecondary,
+    marginRight: theme.spacing.sm,
+  },
+  repsValue: {
+    fontSize: theme.typography.heading.fontSize,
+    fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
+    color: theme.colors.text,
   },
   emptyContainer: {
     paddingVertical: theme.spacing.xxl,
