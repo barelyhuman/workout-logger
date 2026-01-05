@@ -36,7 +36,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     let data = await loadExerciseLibrary();
 
     // Initialize with defaults only once
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
       const initialized = await isExerciseLibraryInitialized();
       if (!initialized) {
         data = defaultExercises;
@@ -45,8 +45,8 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       }
     }
 
-    setExercises(data);
-    setFilteredExercises(data);
+    setExercises(data || []);
+    setFilteredExercises(data || []);
     setLoading(false);
   };
 

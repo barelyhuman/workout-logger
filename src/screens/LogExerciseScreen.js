@@ -39,8 +39,8 @@ export const LogExerciseScreen = ({ navigation }) => {
   const loadExercisesData = async () => {
     setLoading(true);
     const data = await loadExerciseLibrary();
-    setExercises(data);
-    setFilteredExercises(data);
+    setExercises(data || []);
+    setFilteredExercises(data || []);
     setLoading(false);
   };
 

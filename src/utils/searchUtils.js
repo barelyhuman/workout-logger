@@ -9,7 +9,7 @@ export const applySearchFilter = (exercisesList, query) => {
     return [];
   }
 
-  if (!query.trim()) {
+  if (!query || !query.trim()) {
     return exercisesList;
   }
 
