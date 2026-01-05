@@ -49,6 +49,19 @@ export const HistoryScreen = ({ navigation }) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const formatDuration = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    
+    if (minutes > 0 && seconds > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
   const renderExerciseLog = ({ item }) => {
     return (
       <View style={styles.card}>
@@ -64,10 +77,17 @@ export const HistoryScreen = ({ navigation }) => {
             <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
           </View>
         </View>
-        <View style={styles.repsContainer}>
-          <Text style={styles.repsLabel}>Reps:</Text>
-          <Text style={styles.repsValue}>{item.reps}</Text>
-        </View>
+        {item.type === 'duration' ? (
+          <View style={styles.repsContainer}>
+            <Text style={styles.repsLabel}>Duration:</Text>
+            <Text style={styles.repsValue}>{formatDuration(item.duration)}</Text>
+          </View>
+        ) : (
+          <View style={styles.repsContainer}>
+            <Text style={styles.repsLabel}>Reps:</Text>
+            <Text style={styles.repsValue}>{item.reps}</Text>
+          </View>
+        )}
       </View>
     );
   };

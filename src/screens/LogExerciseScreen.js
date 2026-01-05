@@ -21,6 +21,8 @@ export const LogExerciseScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [reps, setReps] = useState('');
+  const [minutes, setMinutes] = useState('');
+  const [seconds, setSeconds] = useState('');
 
   useEffect(() => {
     loadExercisesData();
@@ -43,32 +45,72 @@ export const LogExerciseScreen = ({ navigation }) => {
   const handleExercisePress = (exercise) => {
     setSelectedExercise(exercise);
     setReps('');
+    setMinutes('');
+    setSeconds('');
     setModalVisible(true);
   };
 
   const handleLogExercise = async () => {
-    if (!reps.trim() || isNaN(reps)) {
-      Alert.alert('Error', 'Please enter a valid number of reps');
-      return;
-    }
+    const exerciseType = selectedExercise.type || 'reps';
 
-    const log = {
-      id: Date.now().toString(),
-      exerciseId: selectedExercise.id,
-      exerciseName: selectedExercise.name,
-      category: selectedExercise.category,
-      reps: parseInt(reps, 10),
-      timestamp: new Date().toISOString(),
-    };
+    if (exerciseType === 'reps') {
+      if (!reps.trim() || isNaN(reps)) {
+        Alert.alert('Error', 'Please enter a valid number of reps');
+        return;
+      }
 
-    const success = await saveExerciseLog(log);
-    if (success) {
-      Alert.alert('Success', `Logged ${reps} reps of ${selectedExercise.name}`);
-      setModalVisible(false);
-      setReps('');
-      setSelectedExercise(null);
+      const log = {
+        id: Date.now().toString(),
+        exerciseId: selectedExercise.id,
+        exerciseName: selectedExercise.name,
+        category: selectedExercise.category,
+        type: 'reps',
+        reps: parseInt(reps, 10),
+        timestamp: new Date().toISOString(),
+      };
+
+      const success = await saveExerciseLog(log);
+      if (success) {
+        Alert.alert('Success', `Logged ${reps} reps of ${selectedExercise.name}`);
+        setModalVisible(false);
+        setReps('');
+        setSelectedExercise(null);
+      } else {
+        Alert.alert('Error', 'Failed to log exercise');
+      }
     } else {
-      Alert.alert('Error', 'Failed to log exercise');
+      // Duration type
+      const min = parseInt(minutes, 10) || 0;
+      const sec = parseInt(seconds, 10) || 0;
+      
+      if (min === 0 && sec === 0) {
+        Alert.alert('Error', 'Please enter a valid duration');
+        return;
+      }
+
+      const totalSeconds = min * 60 + sec;
+
+      const log = {
+        id: Date.now().toString(),
+        exerciseId: selectedExercise.id,
+        exerciseName: selectedExercise.name,
+        category: selectedExercise.category,
+        type: 'duration',
+        duration: totalSeconds,
+        timestamp: new Date().toISOString(),
+      };
+
+      const success = await saveExerciseLog(log);
+      if (success) {
+        const durationText = min > 0 ? `${min}m ${sec}s` : `${sec}s`;
+        Alert.alert('Success', `Logged ${durationText} of ${selectedExercise.name}`);
+        setModalVisible(false);
+        setMinutes('');
+        setSeconds('');
+        setSelectedExercise(null);
+      } else {
+        Alert.alert('Error', 'Failed to log exercise');
+      }
     }
   };
 
@@ -155,18 +197,49 @@ export const LogExerciseScreen = ({ navigation }) => {
                   </Text>
                 )}
 
-                <View style={styles.modalSection}>
-                  <Text style={styles.label}>Reps Completed *</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter number of reps"
-                    placeholderTextColor={theme.colors.textSecondary}
-                    value={reps}
-                    onChangeText={setReps}
-                    keyboardType="numeric"
-                    autoFocus
-                  />
-                </View>
+                {selectedExercise.type === 'duration' ? (
+                  <View style={styles.modalSection}>
+                    <Text style={styles.label}>Duration *</Text>
+                    <View style={styles.durationInputs}>
+                      <View style={styles.durationInput}>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="0"
+                          placeholderTextColor={theme.colors.textSecondary}
+                          value={minutes}
+                          onChangeText={setMinutes}
+                          keyboardType="numeric"
+                          autoFocus
+                        />
+                        <Text style={styles.durationLabel}>min</Text>
+                      </View>
+                      <View style={styles.durationInput}>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="0"
+                          placeholderTextColor={theme.colors.textSecondary}
+                          value={seconds}
+                          onChangeText={setSeconds}
+                          keyboardType="numeric"
+                        />
+                        <Text style={styles.durationLabel}>sec</Text>
+                      </View>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={styles.modalSection}>
+                    <Text style={styles.label}>Reps Completed *</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter number of reps"
+                      placeholderTextColor={theme.colors.textSecondary}
+                      value={reps}
+                      onChangeText={setReps}
+                      keyboardType="numeric"
+                      autoFocus
+                    />
+                  </View>
+                )}
 
                 <View style={styles.modalButtons}>
                   <Button
@@ -357,6 +430,21 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
+  },
+  durationInputs: {
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+  },
+  durationInput: {
+    flex: 1,
+  },
+  durationLabel: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: theme.typography.caption.fontWeight,
+    letterSpacing: theme.typography.caption.letterSpacing,
+    color: theme.colors.textSecondary,
+    marginTop: theme.spacing.xs,
+    textAlign: 'center',
   },
   modalButtons: {
     flexDirection: 'row',

@@ -23,6 +23,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
   const [editingExercise, setEditingExercise] = useState(null);
   const [exerciseName, setExerciseName] = useState('');
   const [exerciseCategory, setExerciseCategory] = useState('');
+  const [exerciseType, setExerciseType] = useState('reps');
 
   useEffect(() => {
     loadExercisesData();
@@ -50,6 +51,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     setEditingExercise(null);
     setExerciseName('');
     setExerciseCategory('');
+    setExerciseType('reps');
     setModalVisible(true);
   };
 
@@ -57,6 +59,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     setEditingExercise(exercise);
     setExerciseName(exercise.name);
     setExerciseCategory(exercise.category || '');
+    setExerciseType(exercise.type || 'reps');
     setModalVisible(true);
   };
 
@@ -71,7 +74,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       // Edit existing exercise
       updatedExercises = exercises.map((ex) =>
         ex.id === editingExercise.id
-          ? { ...ex, name: exerciseName.trim(), category: exerciseCategory.trim() }
+          ? { ...ex, name: exerciseName.trim(), category: exerciseCategory.trim(), type: exerciseType }
           : ex
       );
     } else {
@@ -80,6 +83,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
         name: exerciseName.trim(),
         category: exerciseCategory.trim() || 'Other',
+        type: exerciseType,
       };
       updatedExercises = [...exercises, newExercise];
     }
@@ -190,6 +194,46 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
                 value={exerciseCategory}
                 onChangeText={setExerciseCategory}
               />
+            </View>
+
+            <View style={styles.modalSection}>
+              <Text style={styles.label}>Type</Text>
+              <View style={styles.typeSelector}>
+                <TouchableOpacity
+                  style={[
+                    styles.typeButton,
+                    exerciseType === 'reps' && styles.typeButtonActive,
+                  ]}
+                  onPress={() => setExerciseType('reps')}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={[
+                      styles.typeButtonText,
+                      exerciseType === 'reps' && styles.typeButtonTextActive,
+                    ]}
+                  >
+                    Reps
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.typeButton,
+                    exerciseType === 'duration' && styles.typeButtonActive,
+                  ]}
+                  onPress={() => setExerciseType('duration')}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={[
+                      styles.typeButtonText,
+                      exerciseType === 'duration' && styles.typeButtonTextActive,
+                    ]}
+                  >
+                    Duration
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.modalButtons}>
@@ -341,6 +385,33 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
     borderColor: theme.colors.border,
+  },
+  typeSelector: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
+  },
+  typeButton: {
+    flex: 1,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.background,
+    alignItems: 'center',
+  },
+  typeButtonActive: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  },
+  typeButtonText: {
+    fontSize: theme.typography.bodyMedium.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.bodyMedium.letterSpacing,
+    color: theme.colors.text,
+  },
+  typeButtonTextActive: {
+    color: theme.colors.background,
   },
   modalButtons: {
     flexDirection: 'row',
