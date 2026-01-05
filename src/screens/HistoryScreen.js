@@ -53,20 +53,21 @@ export const HistoryScreen = ({ navigation }) => {
     return (
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <View style={styles.exerciseInfo}>
-            <Text style={styles.exerciseName}>{item.exerciseName}</Text>
-            {item.category && (
-              <Text style={styles.category}>{item.category}</Text>
-            )}
+          {item.category && (
+            <Text style={styles.categoryLabel}>{item.category}</Text>
+          )}
+        </View>
+        <Text style={styles.exerciseName}>{item.exerciseName}</Text>
+        <View style={styles.cardFooter}>
+          <View style={styles.repsContainer}>
+            <Text style={styles.repsLabel}>REPS</Text>
+            <Text style={styles.repsValue}>{item.reps}</Text>
           </View>
           <View style={styles.dateInfo}>
+            <Text style={styles.dateLabel}>LOGGED</Text>
             <Text style={styles.date}>{formatDate(item.timestamp)}</Text>
             <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
           </View>
-        </View>
-        <View style={styles.repsContainer}>
-          <Text style={styles.repsLabel}>Reps:</Text>
-          <Text style={styles.repsValue}>{item.reps}</Text>
         </View>
       </View>
     );
@@ -74,9 +75,9 @@ export const HistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Exercise History</Text>
+        <Text style={styles.title}>HISTORY</Text>
       </View>
 
       <FlatList
@@ -108,16 +109,18 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    backgroundColor: theme.colors.background,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
   },
   title: {
-    fontSize: theme.typography.title.fontSize,
-    fontWeight: theme.typography.title.fontWeight,
-    letterSpacing: theme.typography.title.letterSpacing,
-    lineHeight: theme.typography.title.lineHeight,
-    color: theme.colors.text,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
+    textTransform: 'uppercase',
   },
   list: {
     padding: theme.spacing.md,
@@ -125,39 +128,69 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.borderRadius.sm,
     borderWidth: 1,
     borderColor: theme.colors.border,
     marginBottom: theme.spacing.sm,
     ...theme.elevation.low,
   },
   cardHeader: {
+    marginBottom: theme.spacing.xs,
+  },
+  categoryLabel: {
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
+    textTransform: 'uppercase',
+  },
+  exerciseName: {
+    fontSize: theme.typography.heading.fontSize,
+    fontWeight: theme.typography.heading.fontWeight,
+    letterSpacing: theme.typography.heading.letterSpacing,
+    lineHeight: theme.typography.heading.lineHeight,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.md,
+  },
+  cardFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
   },
-  exerciseInfo: {
+  repsContainer: {
     flex: 1,
-    marginRight: theme.spacing.sm,
   },
-  exerciseName: {
-    fontSize: theme.typography.subheading.fontSize,
-    fontWeight: theme.typography.subheading.fontWeight,
-    letterSpacing: theme.typography.subheading.letterSpacing,
-    lineHeight: theme.typography.subheading.lineHeight,
-    color: theme.colors.text,
+  repsLabel: {
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
     marginBottom: theme.spacing.xs,
+    textTransform: 'uppercase',
   },
-  category: {
-    fontSize: theme.typography.caption.fontSize,
-    fontWeight: theme.typography.caption.fontWeight,
-    letterSpacing: theme.typography.caption.letterSpacing,
-    lineHeight: theme.typography.caption.lineHeight,
-    color: theme.colors.textSecondary,
+  repsValue: {
+    fontSize: theme.typography.numeric.fontSize,
+    fontWeight: theme.typography.numeric.fontWeight,
+    letterSpacing: theme.typography.numeric.letterSpacing,
+    lineHeight: theme.typography.numeric.lineHeight,
+    color: theme.colors.text,
   },
   dateInfo: {
     alignItems: 'flex-end',
+  },
+  dateLabel: {
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
+    marginBottom: theme.spacing.xs,
+    textTransform: 'uppercase',
   },
   date: {
     fontSize: theme.typography.caption.fontSize,
@@ -165,49 +198,28 @@ const styles = StyleSheet.create({
     letterSpacing: theme.typography.caption.letterSpacing,
     lineHeight: theme.typography.caption.lineHeight,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.xs,
+    marginBottom: theme.spacing.micro,
   },
   time: {
-    fontSize: theme.typography.small.fontSize,
-    fontWeight: theme.typography.small.fontWeight,
-    letterSpacing: theme.typography.small.letterSpacing,
-    lineHeight: theme.typography.small.lineHeight,
+    fontSize: theme.typography.microRegular.fontSize,
+    fontWeight: theme.typography.microRegular.fontWeight,
+    letterSpacing: theme.typography.microRegular.letterSpacing,
+    lineHeight: theme.typography.microRegular.lineHeight,
     color: theme.colors.textTertiary,
-  },
-  repsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: theme.spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-  },
-  repsLabel: {
-    fontSize: theme.typography.bodyMedium.fontSize,
-    fontWeight: theme.typography.bodyMedium.fontWeight,
-    letterSpacing: theme.typography.bodyMedium.letterSpacing,
-    lineHeight: theme.typography.bodyMedium.lineHeight,
-    color: theme.colors.textSecondary,
-    marginRight: theme.spacing.sm,
-  },
-  repsValue: {
-    fontSize: theme.typography.heading.fontSize,
-    fontWeight: theme.typography.heading.fontWeight,
-    letterSpacing: theme.typography.heading.letterSpacing,
-    lineHeight: theme.typography.heading.lineHeight,
-    color: theme.colors.text,
   },
   emptyContainer: {
     paddingVertical: theme.spacing.xxl,
+    paddingHorizontal: theme.spacing.md,
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: theme.typography.bodySemibold.fontSize,
-    fontWeight: theme.typography.bodySemibold.fontWeight,
-    letterSpacing: theme.typography.bodySemibold.letterSpacing,
-    lineHeight: theme.typography.bodySemibold.lineHeight,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
   },
   emptySubtext: {
     fontSize: theme.typography.caption.fontSize,
