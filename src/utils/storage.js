@@ -27,6 +27,34 @@ export const loadExerciseLogs = async () => {
   }
 };
 
+export const updateExerciseLog = async (updatedLog) => {
+  try {
+    const logs = await loadExerciseLogs();
+    const index = logs.findIndex((log) => log.id === updatedLog.id);
+    if (index !== -1) {
+      logs[index] = updatedLog;
+      await AsyncStorage.setItem(EXERCISE_LOG_KEY, JSON.stringify(logs));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error updating exercise log:', error);
+    return false;
+  }
+};
+
+export const deleteExerciseLog = async (logId) => {
+  try {
+    const logs = await loadExerciseLogs();
+    const filteredLogs = logs.filter((log) => log.id !== logId);
+    await AsyncStorage.setItem(EXERCISE_LOG_KEY, JSON.stringify(filteredLogs));
+    return true;
+  } catch (error) {
+    console.error('Error deleting exercise log:', error);
+    return false;
+  }
+};
+
 // Exercise library storage
 export const saveExerciseLibrary = async (exercises) => {
   try {
