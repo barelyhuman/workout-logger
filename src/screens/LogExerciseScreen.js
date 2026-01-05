@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLibrary, saveExerciseLog } from '../utils/storage';
+import { formatDuration } from '../utils/formatting';
 import { Button } from '../components/Button';
 
 export const LogExerciseScreen = ({ navigation }) => {
@@ -83,6 +84,11 @@ export const LogExerciseScreen = ({ navigation }) => {
       const min = parseInt(minutes, 10) || 0;
       const sec = parseInt(seconds, 10) || 0;
       
+      if (min < 0 || sec < 0) {
+        Alert.alert('Error', 'Duration cannot be negative');
+        return;
+      }
+      
       if (min === 0 && sec === 0) {
         Alert.alert('Error', 'Please enter a valid duration');
         return;
@@ -102,7 +108,7 @@ export const LogExerciseScreen = ({ navigation }) => {
 
       const success = await saveExerciseLog(log);
       if (success) {
-        const durationText = min > 0 ? `${min}m ${sec}s` : `${sec}s`;
+        const durationText = formatDuration(totalSeconds);
         Alert.alert('Success', `Logged ${durationText} of ${selectedExercise.name}`);
         setModalVisible(false);
         setMinutes('');

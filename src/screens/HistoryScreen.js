@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLogs } from '../utils/storage';
+import { formatDuration } from '../utils/formatting';
 
 export const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
@@ -47,19 +48,6 @@ export const HistoryScreen = ({ navigation }) => {
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const formatDuration = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    
-    if (minutes > 0 && seconds > 0) {
-      return `${minutes}m ${seconds}s`;
-    } else if (minutes > 0) {
-      return `${minutes}m`;
-    } else {
-      return `${seconds}s`;
-    }
   };
 
   const renderExerciseLog = ({ item }) => {
