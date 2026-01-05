@@ -98,16 +98,37 @@ const mockNavigation = {
 ### 1. jest.config.js
 ```javascript
 module.exports = {
+  // Use jest-expo preset for Expo projects
+  // Note: For non-Expo React Native projects, use 'react-native' preset instead
   preset: 'jest-expo',
+  
+  // Transform node_modules packages that use ES modules
+  // This allows Jest to properly process React Native and Expo packages
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)',
+    'node_modules/(?!(' +
+      '(jest-)?react-native|' +           // React Native core
+      '@react-native(-community)?|' +      // React Native community packages
+      'expo(nent)?|' +                     // Expo packages
+      '@expo(nent)?/.*|' +                 // Scoped Expo packages
+      '@expo-google-fonts/.*|' +           // Expo fonts
+      'react-navigation|' +                 // Navigation
+      '@react-navigation/.*|' +            // Scoped navigation packages
+      '@unimodules/.*|' +                  // Unimodules
+      'unimodules|' +                      // Unimodules
+      'sentry-expo|' +                     // Sentry
+      'native-base|' +                     // Native Base
+      'react-native-svg' +                 // SVG support
+    '))',
   ],
+  
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  
   collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!src/**/*.test.{js,jsx}',
     '!src/**/__tests__/**',
   ],
+  
   coverageThreshold: {
     global: {
       statements: 80,
@@ -289,10 +310,16 @@ describe('Button', () => {
 
   it('should be disabled when disabled prop is true', () => {
     const onPress = jest.fn();
-    render(<Button onPress={onPress} disabled>Press Me</Button>);
+    // Add testID to component for more reliable testing
+    render(<Button onPress={onPress} disabled testID="test-button">Press Me</Button>);
     
-    const button = screen.getByText('Press Me').parent;
+    // Use testID for more reliable querying
+    const button = screen.getByTestId('test-button');
     expect(button).toBeDisabled();
+    
+    // Verify onPress is not called when disabled
+    fireEvent.press(button);
+    expect(onPress).not.toHaveBeenCalled();
   });
 });
 ```
