@@ -102,14 +102,14 @@ export const LogExerciseScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('ExerciseLibrary')}
             activeOpacity={0.7}
           >
-            <Text style={styles.headerButtonText}>Library</Text>
+            <Text style={styles.headerButtonText}>LIBRARY</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => navigation.navigate('History')}
             activeOpacity={0.7}
           >
-            <Text style={styles.headerButtonText}>History</Text>
+            <Text style={styles.headerButtonText}>HISTORY</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -128,7 +128,7 @@ export const LogExerciseScreen = ({ navigation }) => {
               Add exercises to your library to start logging workouts!
             </Text>
             <Button
-              title="Go to Library"
+              title="GO TO LIBRARY"
               onPress={() => navigation.navigate('ExerciseLibrary')}
               style={styles.emptyButton}
             />
@@ -144,7 +144,7 @@ export const LogExerciseScreen = ({ navigation }) => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Log Exercise</Text>
+            <Text style={styles.modalTitle}>LOG EXERCISE</Text>
             {selectedExercise && (
               <>
                 <Text style={styles.modalExerciseName}>
@@ -157,11 +157,11 @@ export const LogExerciseScreen = ({ navigation }) => {
                 )}
 
                 <View style={styles.modalSection}>
-                  <Text style={styles.label}>Reps Completed *</Text>
+                  <Text style={styles.label}>REPS *</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Enter number of reps"
-                    placeholderTextColor={theme.colors.textSecondary}
+                    placeholderTextColor={theme.colors.textTertiary}
                     value={reps}
                     onChangeText={setReps}
                     keyboardType="numeric"
@@ -171,13 +171,13 @@ export const LogExerciseScreen = ({ navigation }) => {
 
                 <View style={styles.modalButtons}>
                   <Button
-                    title="Cancel"
+                    title="CANCEL"
                     onPress={() => setModalVisible(false)}
                     variant="outline"
                     style={[styles.modalButton, styles.modalButtonLeft]}
                   />
                   <Button
-                    title="Log"
+                    title="LOG"
                     onPress={handleLogExercise}
                     style={[styles.modalButton, styles.modalButtonRight]}
                   />

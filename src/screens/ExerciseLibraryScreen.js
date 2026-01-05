@@ -157,7 +157,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       />
 
       <View style={styles.footer}>
-        <Button title="Add Exercise" onPress={handleAddExercise} />
+        <Button title="ADD EXERCISE" onPress={handleAddExercise} />
       </View>
 
       <Modal
@@ -196,13 +196,13 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
             <View style={styles.modalButtons}>
               <Button
-                title="Cancel"
+                title="CANCEL"
                 onPress={() => setModalVisible(false)}
                 variant="outline"
                 style={[styles.modalButton, styles.modalButtonLeft]}
               />
               <Button
-                title="Save"
+                title="SAVE"
                 onPress={handleSaveExercise}
                 style={[styles.modalButton, styles.modalButtonRight]}
               />
