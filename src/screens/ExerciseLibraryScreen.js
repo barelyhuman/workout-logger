@@ -49,20 +49,22 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     setLoading(false);
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const applySearchFilter = (exercisesList, query) => {
     if (!query.trim()) {
-      setFilteredExercises(exercises);
-      return;
+      return exercisesList;
     }
 
     const lowercaseQuery = query.toLowerCase();
-    const filtered = exercises.filter((exercise) => {
+    return exercisesList.filter((exercise) => {
       const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
       const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
       return nameMatch || categoryMatch;
     });
-    setFilteredExercises(filtered);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setFilteredExercises(applySearchFilter(exercises, query));
   };
 
   const handleAddExercise = () => {
@@ -105,20 +107,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
     await saveExerciseLibrary(updatedExercises);
     setExercises(updatedExercises);
-    
-    // Re-apply current search filter to updated list
-    if (searchQuery.trim()) {
-      const lowercaseQuery = searchQuery.toLowerCase();
-      const filtered = updatedExercises.filter((exercise) => {
-        const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
-        const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
-        return nameMatch || categoryMatch;
-      });
-      setFilteredExercises(filtered);
-    } else {
-      setFilteredExercises(updatedExercises);
-    }
-    
+    setFilteredExercises(applySearchFilter(updatedExercises, searchQuery));
     setModalVisible(false);
   };
 
@@ -135,19 +124,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
             const updatedExercises = exercises.filter((ex) => ex.id !== exerciseId);
             await saveExerciseLibrary(updatedExercises);
             setExercises(updatedExercises);
-            
-            // Re-apply current search filter to updated list
-            if (searchQuery.trim()) {
-              const lowercaseQuery = searchQuery.toLowerCase();
-              const filtered = updatedExercises.filter((exercise) => {
-                const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
-                const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
-                return nameMatch || categoryMatch;
-              });
-              setFilteredExercises(filtered);
-            } else {
-              setFilteredExercises(updatedExercises);
-            }
+            setFilteredExercises(applySearchFilter(updatedExercises, searchQuery));
           },
         },
       ]

@@ -43,20 +43,22 @@ export const LogExerciseScreen = ({ navigation }) => {
     setLoading(false);
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
+  const applySearchFilter = (exercisesList, query) => {
     if (!query.trim()) {
-      setFilteredExercises(exercises);
-      return;
+      return exercisesList;
     }
 
     const lowercaseQuery = query.toLowerCase();
-    const filtered = exercises.filter((exercise) => {
+    return exercisesList.filter((exercise) => {
       const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
       const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
       return nameMatch || categoryMatch;
     });
-    setFilteredExercises(filtered);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setFilteredExercises(applySearchFilter(exercises, query));
   };
 
   const handleExercisePress = (exercise) => {
