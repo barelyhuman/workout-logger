@@ -105,8 +105,20 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
     await saveExerciseLibrary(updatedExercises);
     setExercises(updatedExercises);
-    setFilteredExercises(updatedExercises);
-    setSearchQuery('');
+    
+    // Re-apply current search filter to updated list
+    if (searchQuery.trim()) {
+      const lowercaseQuery = searchQuery.toLowerCase();
+      const filtered = updatedExercises.filter((exercise) => {
+        const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
+        const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
+        return nameMatch || categoryMatch;
+      });
+      setFilteredExercises(filtered);
+    } else {
+      setFilteredExercises(updatedExercises);
+    }
+    
     setModalVisible(false);
   };
 
@@ -123,8 +135,19 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
             const updatedExercises = exercises.filter((ex) => ex.id !== exerciseId);
             await saveExerciseLibrary(updatedExercises);
             setExercises(updatedExercises);
-            setFilteredExercises(updatedExercises);
-            setSearchQuery('');
+            
+            // Re-apply current search filter to updated list
+            if (searchQuery.trim()) {
+              const lowercaseQuery = searchQuery.toLowerCase();
+              const filtered = updatedExercises.filter((exercise) => {
+                const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
+                const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
+                return nameMatch || categoryMatch;
+              });
+              setFilteredExercises(filtered);
+            } else {
+              setFilteredExercises(updatedExercises);
+            }
           },
         },
       ]
