@@ -17,6 +17,9 @@ import { formatDate, formatTime } from '../utils/dateFormatter';
 import { formatDuration } from '../utils/durationFormatter';
 import { Button } from '../components/Button';
 
+// Constants
+const DEFAULT_TRACKING_TYPE = 'reps';
+
 export const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +49,7 @@ export const HistoryScreen = ({ navigation }) => {
 
   const handleLogPress = (log) => {
     setSelectedLog(log);
-    const trackingType = log.trackingType || 'reps';
+    const trackingType = log.trackingType || DEFAULT_TRACKING_TYPE;
     
     if (trackingType === 'reps') {
       setReps(log.reps?.toString() || '');
@@ -65,7 +68,7 @@ export const HistoryScreen = ({ navigation }) => {
   };
 
   const handleSaveEdit = async () => {
-    const trackingType = selectedLog.trackingType || 'reps';
+    const trackingType = selectedLog.trackingType || DEFAULT_TRACKING_TYPE;
     let parsedReps, parsedMinutes, parsedSeconds;
     
     if (trackingType === 'reps') {
@@ -78,8 +81,13 @@ export const HistoryScreen = ({ navigation }) => {
       parsedMinutes = parseInt(minutes || '0', 10);
       parsedSeconds = parseInt(seconds || '0', 10);
       
-      if (isNaN(parsedMinutes) || isNaN(parsedSeconds) || parsedMinutes < 0 || parsedSeconds < 0) {
-        Alert.alert('Error', 'Please enter valid positive numbers for duration');
+      if (isNaN(parsedMinutes) || isNaN(parsedSeconds)) {
+        Alert.alert('Error', 'Please enter valid numbers for duration');
+        return;
+      }
+      
+      if (parsedMinutes < 0 || parsedSeconds < 0) {
+        Alert.alert('Error', 'Duration cannot be negative');
         return;
       }
       
@@ -109,7 +117,7 @@ export const HistoryScreen = ({ navigation }) => {
       setSelectedLog(null);
       loadHistory();
     } else {
-      Alert.alert('Error', 'Failed to update exercise log');
+      Alert.alert('Error', 'Failed to update exercise log. Please try again.');
     }
   };
 
@@ -142,7 +150,7 @@ export const HistoryScreen = ({ navigation }) => {
   };
 
   const renderExerciseLog = ({ item }) => {
-    const trackingType = item.trackingType || 'reps';
+    const trackingType = item.trackingType || DEFAULT_TRACKING_TYPE;
     let displayValue = '';
     let displayLabel = '';
     
