@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLibrary, saveExerciseLog } from '../utils/storage';
+import { applySearchFilter } from '../utils/searchUtils';
 import { Button } from '../components/Button';
 
 export const LogExerciseScreen = ({ navigation }) => {
@@ -41,19 +42,6 @@ export const LogExerciseScreen = ({ navigation }) => {
     setExercises(data);
     setFilteredExercises(data);
     setLoading(false);
-  };
-
-  const applySearchFilter = (exercisesList, query) => {
-    if (!query.trim()) {
-      return exercisesList;
-    }
-
-    const lowercaseQuery = query.toLowerCase();
-    return exercisesList.filter((exercise) => {
-      const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
-      const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
-      return nameMatch || categoryMatch;
-    });
   };
 
   const handleSearch = (query) => {
