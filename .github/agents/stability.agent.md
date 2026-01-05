@@ -6,7 +6,7 @@
 
 name: stablility
 description: an agent to make sure the app is stable and in working state at all times.
-tools: ["read", "edit", "search", "github/github-mcp-server"]
+tools: ["read", "edit", "search", "github", "playwright"]
 ---
 
 # My Agent
