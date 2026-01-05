@@ -55,8 +55,10 @@ export const LogExerciseScreen = ({ navigation }) => {
     const exerciseType = selectedExercise.type || 'reps';
 
     if (exerciseType === 'reps') {
-      if (!reps.trim() || isNaN(reps)) {
-        Alert.alert('Error', 'Please enter a valid number of reps');
+      const repsValue = parseInt(reps, 10);
+      
+      if (!reps.trim() || isNaN(repsValue) || repsValue <= 0) {
+        Alert.alert('Error', 'Please enter a valid positive number of reps');
         return;
       }
 
@@ -66,7 +68,7 @@ export const LogExerciseScreen = ({ navigation }) => {
         exerciseName: selectedExercise.name,
         category: selectedExercise.category,
         type: 'reps',
-        reps: parseInt(reps, 10),
+        reps: repsValue,
         timestamp: new Date().toISOString(),
       };
 
