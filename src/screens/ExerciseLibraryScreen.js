@@ -45,8 +45,9 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       }
     }
 
-    setExercises(data || []);
-    setFilteredExercises(data || []);
+    const safeData = data || [];
+    setExercises(safeData);
+    setFilteredExercises(safeData);
     setLoading(false);
   };
 

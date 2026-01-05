@@ -15,6 +15,9 @@ export const applySearchFilter = (exercisesList, query) => {
 
   const lowercaseQuery = query.toLowerCase();
   return exercisesList.filter((exercise) => {
+    if (!exercise) {
+      return false;
+    }
     const nameMatch = exercise.name?.toLowerCase().includes(lowercaseQuery);
     const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
     return nameMatch || categoryMatch;
