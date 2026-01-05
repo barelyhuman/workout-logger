@@ -22,6 +22,7 @@ export const LogExerciseScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [reps, setReps] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
 
@@ -114,6 +115,16 @@ export const LogExerciseScreen = ({ navigation }) => {
     }
   };
 
+  const filteredExercises = exercises.filter((exercise) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    const name = exercise.name.toLowerCase();
+    const category = (exercise.category || '').toLowerCase();
+    
+    return name.includes(query) || category.includes(query);
+  });
+
   const renderExercise = ({ item }) => (
     <TouchableOpacity
       style={styles.exerciseCard}
@@ -163,8 +174,29 @@ export const LogExerciseScreen = ({ navigation }) => {
         </View>
       </View>
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search exercises..."
+          placeholderTextColor={theme.colors.textTertiary}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={() => setSearchQuery('')}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.clearButtonText}>✕</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
       <FlatList
-        data={exercises}
+        data={filteredExercises}
         renderItem={renderExercise}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
@@ -172,15 +204,21 @@ export const LogExerciseScreen = ({ navigation }) => {
         onRefresh={loadExercisesData}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No exercises in library.</Text>
-            <Text style={styles.emptySubtext}>
-              Add exercises to your library to start logging workouts!
+            <Text style={styles.emptyText}>
+              {searchQuery ? 'No exercises found.' : 'No exercises in library.'}
             </Text>
-            <Button
-              title="GO TO LIBRARY"
-              onPress={() => navigation.navigate('ExerciseLibrary')}
-              style={styles.emptyButton}
-            />
+            <Text style={styles.emptySubtext}>
+              {searchQuery 
+                ? 'Try a different search term.' 
+                : 'Add exercises to your library to start logging workouts!'}
+            </Text>
+            {!searchQuery && (
+              <Button
+                title="GO TO LIBRARY"
+                onPress={() => navigation.navigate('ExerciseLibrary')}
+                style={styles.emptyButton}
+              />
+            )}
           </View>
         }
       />
@@ -304,6 +342,42 @@ const styles = StyleSheet.create({
     letterSpacing: theme.typography.micro.letterSpacing,
     color: theme.colors.text,
     textTransform: 'uppercase',
+  },
+  searchContainer: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    backgroundColor: theme.colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  clearButton: {
+    position: 'absolute',
+    right: theme.spacing.md + theme.spacing.sm,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.border,
+    borderRadius: theme.borderRadius.sm,
+  },
+  clearButtonText: {
+    fontSize: 16,
+    color: theme.colors.text,
+    fontWeight: '600',
   },
   list: {
     padding: theme.spacing.md,

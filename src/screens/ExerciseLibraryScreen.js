@@ -23,6 +23,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
   const [editingExercise, setEditingExercise] = useState(null);
   const [exerciseName, setExerciseName] = useState('');
   const [exerciseCategory, setExerciseCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [trackingType, setTrackingType] = useState('reps');
 
   useEffect(() => {
@@ -112,6 +113,16 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     );
   };
 
+  const filteredExercises = exercises.filter((exercise) => {
+    if (!searchQuery.trim()) return true;
+    
+    const query = searchQuery.toLowerCase();
+    const name = exercise.name.toLowerCase();
+    const category = (exercise.category || '').toLowerCase();
+    
+    return name.includes(query) || category.includes(query);
+  });
+
   const renderExercise = ({ item }) => (
     <View style={styles.exerciseCard}>
       <TouchableOpacity
@@ -141,8 +152,29 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         <Text style={styles.title}>EXERCISE LIBRARY</Text>
       </View>
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search exercises..."
+          placeholderTextColor={theme.colors.textTertiary}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={() => setSearchQuery('')}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.clearButtonText}>✕</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
       <FlatList
-        data={exercises}
+        data={filteredExercises}
         renderItem={renderExercise}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
@@ -151,10 +183,12 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              No exercises in library.
+              {searchQuery ? 'No exercises found.' : 'No exercises in library.'}
             </Text>
             <Text style={styles.emptySubtext}>
-              Add your first one to get started!
+              {searchQuery 
+                ? 'Try a different search term.' 
+                : 'Add your first one to get started!'}
             </Text>
           </View>
         }
@@ -277,6 +311,42 @@ const styles = StyleSheet.create({
     lineHeight: theme.typography.micro.lineHeight,
     color: theme.colors.textMicro,
     textTransform: 'uppercase',
+  },
+  searchContainer: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    backgroundColor: theme.colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  clearButton: {
+    position: 'absolute',
+    right: theme.spacing.md + theme.spacing.sm,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.colors.border,
+    borderRadius: theme.borderRadius.sm,
+  },
+  clearButtonText: {
+    fontSize: 16,
+    color: theme.colors.text,
+    fontWeight: '600',
   },
   list: {
     padding: theme.spacing.md,
