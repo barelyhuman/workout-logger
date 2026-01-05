@@ -105,6 +105,13 @@ export const LogExerciseScreen = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
+            onPress={() => navigation.navigate('Summary')}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.headerButtonText}>Summary</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
             onPress={() => navigation.navigate('History')}
             activeOpacity={0.7}
           >
