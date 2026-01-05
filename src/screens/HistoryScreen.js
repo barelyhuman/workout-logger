@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLogs } from '../utils/storage';
 import { formatDate, formatTime } from '../utils/dateFormatter';
+import { formatDuration } from '../utils/durationFormatter';
 
 export const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
@@ -37,16 +38,7 @@ export const HistoryScreen = ({ navigation }) => {
       displayValue = item.reps;
       displayLabel = 'REPS';
     } else {
-      // Format duration from seconds
-      const totalSeconds = item.duration;
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-      
-      if (minutes > 0) {
-        displayValue = seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
-      } else {
-        displayValue = `${seconds}s`;
-      }
+      displayValue = formatDuration(item.duration);
       displayLabel = 'DURATION';
     }
     

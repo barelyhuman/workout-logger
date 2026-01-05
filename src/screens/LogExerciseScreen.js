@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLibrary, saveExerciseLog } from '../utils/storage';
+import { formatDuration } from '../utils/durationFormatter';
 import { Button } from '../components/Button';
 
 export const LogExerciseScreen = ({ navigation }) => {
@@ -97,8 +98,8 @@ export const LogExerciseScreen = ({ navigation }) => {
       } else {
         const min = parseInt(minutes || '0', 10);
         const sec = parseInt(seconds || '0', 10);
-        const timeStr = min > 0 ? `${min}m ${sec}s` : `${sec}s`;
-        Alert.alert('Success', `Logged ${timeStr} of ${selectedExercise.name}`);
+        const totalSeconds = min * 60 + sec;
+        Alert.alert('Success', `Logged ${formatDuration(totalSeconds)} of ${selectedExercise.name}`);
       }
       setModalVisible(false);
       setReps('');
