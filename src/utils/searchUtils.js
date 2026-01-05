@@ -5,13 +5,17 @@
  * @returns {Array} Filtered list of exercises
  */
 export const applySearchFilter = (exercisesList, query) => {
+  if (!exercisesList) {
+    return [];
+  }
+
   if (!query.trim()) {
     return exercisesList;
   }
 
   const lowercaseQuery = query.toLowerCase();
   return exercisesList.filter((exercise) => {
-    const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
+    const nameMatch = exercise.name?.toLowerCase().includes(lowercaseQuery);
     const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
     return nameMatch || categoryMatch;
   });
