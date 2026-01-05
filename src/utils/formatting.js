@@ -16,7 +16,7 @@ export const formatDuration = (totalSeconds) => {
   }
   
   const minutes = Math.floor(totalSeconds / 60);
-  const seconds = Math.floor(totalSeconds % 60);
+  const seconds = totalSeconds % 60;
   
   if (minutes > 0 && seconds > 0) {
     return `${minutes}m ${seconds}s`;

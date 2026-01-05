@@ -58,7 +58,7 @@ export const LogExerciseScreen = ({ navigation }) => {
       const repsValue = parseInt(reps, 10);
       
       if (!reps.trim() || isNaN(repsValue) || repsValue <= 0) {
-        Alert.alert('Error', 'Please enter a valid positive number of reps');
+        Alert.alert('Error', 'Please enter a valid positive number for reps');
         return;
       }
 
@@ -74,7 +74,7 @@ export const LogExerciseScreen = ({ navigation }) => {
 
       const success = await saveExerciseLog(log);
       if (success) {
-        Alert.alert('Success', `Logged ${reps} reps of ${selectedExercise.name}`);
+        Alert.alert('Success', `Logged ${repsValue} reps of ${selectedExercise.name}`);
         setModalVisible(false);
         setReps('');
         setSelectedExercise(null);
@@ -87,12 +87,12 @@ export const LogExerciseScreen = ({ navigation }) => {
       const secValue = seconds.trim() === '' ? 0 : parseInt(seconds, 10);
       
       if (isNaN(minValue) || isNaN(secValue) || minValue < 0 || secValue < 0) {
-        Alert.alert('Error', 'Please enter valid positive numbers for duration');
+        Alert.alert('Error', 'Please enter valid non-negative numbers for minutes and seconds');
         return;
       }
       
       if (minValue === 0 && secValue === 0) {
-        Alert.alert('Error', 'Please enter a duration greater than 0');
+        Alert.alert('Error', 'Duration must be greater than 0');
         return;
       }
 
