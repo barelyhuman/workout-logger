@@ -53,28 +53,30 @@ export const LogExerciseScreen = ({ navigation }) => {
 
   const handleLogExercise = async () => {
     const trackingType = selectedExercise.trackingType || 'reps';
+    let parsedReps, parsedMinutes, parsedSeconds;
     
     if (trackingType === 'reps') {
       if (!reps.trim() || isNaN(reps)) {
         Alert.alert('Error', 'Please enter a valid number of reps');
         return;
       }
+      parsedReps = parseInt(reps, 10);
     } else {
-      // Duration tracking
-      const min = parseInt(minutes || '0', 10);
-      const sec = parseInt(seconds || '0', 10);
+      // Duration tracking - parse and validate
+      parsedMinutes = parseInt(minutes || '0', 10);
+      parsedSeconds = parseInt(seconds || '0', 10);
       
-      if (isNaN(min) || isNaN(sec) || min < 0 || sec < 0) {
+      if (isNaN(parsedMinutes) || isNaN(parsedSeconds) || parsedMinutes < 0 || parsedSeconds < 0) {
         Alert.alert('Error', 'Please enter valid positive numbers for duration');
         return;
       }
       
-      if (min === 0 && sec === 0) {
+      if (parsedMinutes === 0 && parsedSeconds === 0) {
         Alert.alert('Error', 'Duration must be at least 1 second');
         return;
       }
       
-      if (sec >= 60) {
+      if (parsedSeconds >= 60) {
         Alert.alert('Error', 'Seconds must be less than 60');
         return;
       }
@@ -90,10 +92,9 @@ export const LogExerciseScreen = ({ navigation }) => {
     };
 
     if (trackingType === 'reps') {
-      log.reps = parseInt(reps, 10);
+      log.reps = parsedReps;
     } else {
-      const totalSeconds = parseInt(minutes || '0', 10) * 60 + parseInt(seconds || '0', 10);
-      log.duration = totalSeconds; // Store duration in seconds
+      log.duration = parsedMinutes * 60 + parsedSeconds;
     }
 
     const success = await saveExerciseLog(log);
