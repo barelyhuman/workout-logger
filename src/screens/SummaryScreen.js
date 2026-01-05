@@ -61,23 +61,46 @@ export const SummaryScreen = ({ navigation }) => {
     </View>
   );
 
-  const renderExerciseLog = ({ item }) => (
-    <View style={styles.exerciseCard}>
-      <View style={styles.exerciseInfo}>
-        <Text style={styles.exerciseName}>{item.exerciseName}</Text>
-        {item.category && (
-          <Text style={styles.category}>{item.category}</Text>
-        )}
-      </View>
-      <View style={styles.exerciseStats}>
-        <View style={styles.repsContainer}>
-          <Text style={styles.repsValue}>{item.reps}</Text>
-          <Text style={styles.repsLabel}>reps</Text>
+  const renderExerciseLog = ({ item }) => {
+    const trackingType = item.trackingType || 'reps';
+    let displayValue = '';
+    let displayLabel = '';
+    
+    if (trackingType === 'reps') {
+      displayValue = item.reps;
+      displayLabel = 'reps';
+    } else {
+      // Format duration from seconds
+      const totalSeconds = item.duration;
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      
+      if (minutes > 0) {
+        displayValue = seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
+      } else {
+        displayValue = `${seconds}s`;
+      }
+      displayLabel = '';
+    }
+    
+    return (
+      <View style={styles.exerciseCard}>
+        <View style={styles.exerciseInfo}>
+          <Text style={styles.exerciseName}>{item.exerciseName}</Text>
+          {item.category && (
+            <Text style={styles.category}>{item.category}</Text>
+          )}
         </View>
-        <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
+        <View style={styles.exerciseStats}>
+          <View style={styles.repsContainer}>
+            <Text style={styles.repsValue}>{displayValue}</Text>
+            {displayLabel && <Text style={styles.repsLabel}>{displayLabel}</Text>}
+          </View>
+          <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>

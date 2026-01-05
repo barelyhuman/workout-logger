@@ -29,6 +29,27 @@ export const HistoryScreen = ({ navigation }) => {
   };
 
   const renderExerciseLog = ({ item }) => {
+    const trackingType = item.trackingType || 'reps';
+    let displayValue = '';
+    let displayLabel = '';
+    
+    if (trackingType === 'reps') {
+      displayValue = item.reps;
+      displayLabel = 'REPS';
+    } else {
+      // Format duration from seconds
+      const totalSeconds = item.duration;
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      
+      if (minutes > 0) {
+        displayValue = seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
+      } else {
+        displayValue = `${seconds}s`;
+      }
+      displayLabel = 'DURATION';
+    }
+    
     return (
       <View style={styles.card}>
         <View style={styles.cardHeader}>
@@ -39,8 +60,8 @@ export const HistoryScreen = ({ navigation }) => {
         <Text style={styles.exerciseName}>{item.exerciseName}</Text>
         <View style={styles.cardFooter}>
           <View style={styles.repsContainer}>
-            <Text style={styles.repsLabel}>REPS</Text>
-            <Text style={styles.repsValue}>{item.reps}</Text>
+            <Text style={styles.repsLabel}>{displayLabel}</Text>
+            <Text style={styles.repsValue}>{displayValue}</Text>
           </View>
           <View style={styles.dateInfo}>
             <Text style={styles.dateLabel}>LOGGED</Text>
