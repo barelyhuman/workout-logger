@@ -18,6 +18,8 @@ import { Button } from '../components/Button';
 
 export const ExerciseLibraryScreen = ({ navigation }) => {
   const [exercises, setExercises] = useState([]);
+  const [filteredExercises, setFilteredExercises] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingExercise, setEditingExercise] = useState(null);
@@ -43,7 +45,24 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     }
 
     setExercises(data);
+    setFilteredExercises(data);
     setLoading(false);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredExercises(exercises);
+      return;
+    }
+
+    const lowercaseQuery = query.toLowerCase();
+    const filtered = exercises.filter((exercise) => {
+      const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
+      const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
+      return nameMatch || categoryMatch;
+    });
+    setFilteredExercises(filtered);
   };
 
   const handleAddExercise = () => {
@@ -86,6 +105,8 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
     await saveExerciseLibrary(updatedExercises);
     setExercises(updatedExercises);
+    setFilteredExercises(updatedExercises);
+    setSearchQuery('');
     setModalVisible(false);
   };
 
@@ -102,6 +123,8 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
             const updatedExercises = exercises.filter((ex) => ex.id !== exerciseId);
             await saveExerciseLibrary(updatedExercises);
             setExercises(updatedExercises);
+            setFilteredExercises(updatedExercises);
+            setSearchQuery('');
           },
         },
       ]
@@ -135,8 +158,20 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         <Text style={styles.title}>Exercise Library</Text>
       </View>
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search exercises..."
+          placeholderTextColor={theme.colors.textSecondary}
+          value={searchQuery}
+          onChangeText={handleSearch}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+
       <FlatList
-        data={exercises}
+        data={filteredExercises}
         renderItem={renderExercise}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
@@ -145,10 +180,12 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              No exercises in library.
+              {searchQuery ? 'No exercises found.' : 'No exercises in library.'}
             </Text>
             <Text style={styles.emptySubtext}>
-              Add your first one to get started!
+              {searchQuery
+                ? 'Try a different search term.'
+                : 'Add your first one to get started!'}
             </Text>
           </View>
         }
@@ -229,6 +266,22 @@ const styles = StyleSheet.create({
     letterSpacing: theme.typography.title.letterSpacing,
     lineHeight: theme.typography.title.lineHeight,
     color: theme.colors.text,
+  },
+  searchContainer: {
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
+  },
+  searchInput: {
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   list: {
     padding: theme.spacing.md,

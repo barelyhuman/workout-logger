@@ -17,6 +17,8 @@ import { Button } from '../components/Button';
 
 export const LogExerciseScreen = ({ navigation }) => {
   const [exercises, setExercises] = useState([]);
+  const [filteredExercises, setFilteredExercises] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
@@ -37,7 +39,24 @@ export const LogExerciseScreen = ({ navigation }) => {
     setLoading(true);
     const data = await loadExerciseLibrary();
     setExercises(data);
+    setFilteredExercises(data);
     setLoading(false);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setFilteredExercises(exercises);
+      return;
+    }
+
+    const lowercaseQuery = query.toLowerCase();
+    const filtered = exercises.filter((exercise) => {
+      const nameMatch = exercise.name.toLowerCase().includes(lowercaseQuery);
+      const categoryMatch = exercise.category?.toLowerCase().includes(lowercaseQuery);
+      return nameMatch || categoryMatch;
+    });
+    setFilteredExercises(filtered);
   };
 
   const handleExercisePress = (exercise) => {
@@ -113,8 +132,20 @@ export const LogExerciseScreen = ({ navigation }) => {
         </View>
       </View>
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search exercises..."
+          placeholderTextColor={theme.colors.textSecondary}
+          value={searchQuery}
+          onChangeText={handleSearch}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+
       <FlatList
-        data={exercises}
+        data={filteredExercises}
         renderItem={renderExercise}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
@@ -122,15 +153,21 @@ export const LogExerciseScreen = ({ navigation }) => {
         onRefresh={loadExercisesData}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No exercises in library.</Text>
-            <Text style={styles.emptySubtext}>
-              Add exercises to your library to start logging workouts!
+            <Text style={styles.emptyText}>
+              {searchQuery ? 'No exercises found.' : 'No exercises in library.'}
             </Text>
-            <Button
-              title="Go to Library"
-              onPress={() => navigation.navigate('ExerciseLibrary')}
-              style={styles.emptyButton}
-            />
+            <Text style={styles.emptySubtext}>
+              {searchQuery
+                ? 'Try a different search term.'
+                : 'Add exercises to your library to start logging workouts!'}
+            </Text>
+            {!searchQuery && (
+              <Button
+                title="Go to Library"
+                onPress={() => navigation.navigate('ExerciseLibrary')}
+                style={styles.emptyButton}
+              />
+            )}
           </View>
         }
       />
@@ -225,6 +262,22 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.bodyMedium.fontWeight,
     letterSpacing: theme.typography.bodyMedium.letterSpacing,
     color: theme.colors.text,
+  },
+  searchContainer: {
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
+  },
+  searchInput: {
+    backgroundColor: theme.colors.surface,
+    color: theme.colors.text,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.body.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    padding: theme.spacing.md,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   list: {
     padding: theme.spacing.md,
