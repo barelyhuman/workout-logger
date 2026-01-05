@@ -83,20 +83,20 @@ export const LogExerciseScreen = ({ navigation }) => {
       }
     } else {
       // Duration type
-      const min = parseInt(minutes, 10) || 0;
-      const sec = parseInt(seconds, 10) || 0;
+      const minValue = minutes.trim() === '' ? 0 : parseInt(minutes, 10);
+      const secValue = seconds.trim() === '' ? 0 : parseInt(seconds, 10);
       
-      if (min < 0 || sec < 0) {
-        Alert.alert('Error', 'Duration cannot be negative');
+      if (isNaN(minValue) || isNaN(secValue) || minValue < 0 || secValue < 0) {
+        Alert.alert('Error', 'Please enter valid positive numbers for duration');
         return;
       }
       
-      if (min === 0 && sec === 0) {
-        Alert.alert('Error', 'Please enter a valid duration');
+      if (minValue === 0 && secValue === 0) {
+        Alert.alert('Error', 'Please enter a duration greater than 0');
         return;
       }
 
-      const totalSeconds = min * 60 + sec;
+      const totalSeconds = minValue * 60 + secValue;
 
       const log = {
         id: Date.now().toString(),

@@ -6,8 +6,12 @@
  * @returns {string} Formatted duration (e.g., "2m 30s", "2m", "45s")
  */
 export const formatDuration = (totalSeconds) => {
-  // Validate input
-  if (typeof totalSeconds !== 'number' || isNaN(totalSeconds) || totalSeconds < 0) {
+  // Validate input type and value
+  if (typeof totalSeconds !== 'number' || isNaN(totalSeconds)) {
+    return '0s';
+  }
+  
+  if (totalSeconds < 0) {
     return '0s';
   }
   
