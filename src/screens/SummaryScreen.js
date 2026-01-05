@@ -90,7 +90,7 @@ export const SummaryScreen = ({ navigation }) => {
         sections={groupedLogs}
         renderItem={renderExerciseLog}
         renderSectionHeader={renderSectionHeader}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id || `${item.timestamp}-${index}`}
         contentContainerStyle={styles.list}
         refreshing={loading}
         onRefresh={loadSummary}

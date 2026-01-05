@@ -1,9 +1,13 @@
 // Shared date formatting utilities
 
-export const formatDate = (dateString) => {
-  const date = new Date(dateString);
+export const formatDate = (dateInput) => {
+  const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
   const now = new Date();
-  const diffTime = now - date;
+  
+  // Reset time to midnight for accurate day comparison
+  const dateAtMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const nowAtMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diffTime = nowAtMidnight - dateAtMidnight;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {
