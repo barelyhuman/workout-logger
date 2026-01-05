@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLogs } from '../utils/storage';
 import { formatDate, formatTime } from '../utils/dateFormatter';
+import { formatDuration } from '../utils/durationFormatter';
 
 export const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
@@ -29,6 +30,18 @@ export const HistoryScreen = ({ navigation }) => {
   };
 
   const renderExerciseLog = ({ item }) => {
+    const trackingType = item.trackingType || 'reps';
+    let displayValue = '';
+    let displayLabel = '';
+    
+    if (trackingType === 'reps') {
+      displayValue = item.reps;
+      displayLabel = 'REPS';
+    } else {
+      displayValue = formatDuration(item.duration);
+      displayLabel = 'DURATION';
+    }
+    
     return (
       <View style={styles.card}>
         <View style={styles.cardHeader}>
@@ -39,8 +52,8 @@ export const HistoryScreen = ({ navigation }) => {
         <Text style={styles.exerciseName}>{item.exerciseName}</Text>
         <View style={styles.cardFooter}>
           <View style={styles.repsContainer}>
-            <Text style={styles.repsLabel}>REPS</Text>
-            <Text style={styles.repsValue}>{item.reps}</Text>
+            <Text style={styles.repsLabel}>{displayLabel}</Text>
+            <Text style={styles.repsValue}>{displayValue}</Text>
           </View>
           <View style={styles.dateInfo}>
             <Text style={styles.dateLabel}>LOGGED</Text>

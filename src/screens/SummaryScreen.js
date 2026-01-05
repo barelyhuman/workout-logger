@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLogs } from '../utils/storage';
 import { formatDate, formatTime } from '../utils/dateFormatter';
+import { formatDuration } from '../utils/durationFormatter';
 
 export const SummaryScreen = ({ navigation }) => {
   const [groupedLogs, setGroupedLogs] = useState([]);
@@ -61,23 +62,37 @@ export const SummaryScreen = ({ navigation }) => {
     </View>
   );
 
-  const renderExerciseLog = ({ item }) => (
-    <View style={styles.exerciseCard}>
-      <View style={styles.exerciseInfo}>
-        <Text style={styles.exerciseName}>{item.exerciseName}</Text>
-        {item.category && (
-          <Text style={styles.category}>{item.category}</Text>
-        )}
-      </View>
-      <View style={styles.exerciseStats}>
-        <View style={styles.repsContainer}>
-          <Text style={styles.repsValue}>{item.reps}</Text>
-          <Text style={styles.repsLabel}>reps</Text>
+  const renderExerciseLog = ({ item }) => {
+    const trackingType = item.trackingType || 'reps';
+    let displayValue = '';
+    let displayLabel = '';
+    
+    if (trackingType === 'reps') {
+      displayValue = item.reps;
+      displayLabel = 'reps';
+    } else {
+      displayValue = formatDuration(item.duration);
+      displayLabel = '';
+    }
+    
+    return (
+      <View style={styles.exerciseCard}>
+        <View style={styles.exerciseInfo}>
+          <Text style={styles.exerciseName}>{item.exerciseName}</Text>
+          {item.category && (
+            <Text style={styles.category}>{item.category}</Text>
+          )}
         </View>
-        <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
+        <View style={styles.exerciseStats}>
+          <View style={styles.repsContainer}>
+            <Text style={styles.repsValue}>{displayValue}</Text>
+            {displayLabel && <Text style={styles.repsLabel}>{displayLabel}</Text>}
+          </View>
+          <Text style={styles.time}>{formatTime(item.timestamp)}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>

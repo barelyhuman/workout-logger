@@ -23,6 +23,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
   const [editingExercise, setEditingExercise] = useState(null);
   const [exerciseName, setExerciseName] = useState('');
   const [exerciseCategory, setExerciseCategory] = useState('');
+  const [trackingType, setTrackingType] = useState('reps');
 
   useEffect(() => {
     loadExercisesData();
@@ -50,6 +51,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     setEditingExercise(null);
     setExerciseName('');
     setExerciseCategory('');
+    setTrackingType('reps');
     setModalVisible(true);
   };
 
@@ -57,6 +59,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
     setEditingExercise(exercise);
     setExerciseName(exercise.name);
     setExerciseCategory(exercise.category || '');
+    setTrackingType(exercise.trackingType || 'reps');
     setModalVisible(true);
   };
 
@@ -71,7 +74,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       // Edit existing exercise
       updatedExercises = exercises.map((ex) =>
         ex.id === editingExercise.id
-          ? { ...ex, name: exerciseName.trim(), category: exerciseCategory.trim() }
+          ? { ...ex, name: exerciseName.trim(), category: exerciseCategory.trim(), trackingType }
           : ex
       );
     } else {
@@ -80,6 +83,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
         name: exerciseName.trim(),
         category: exerciseCategory.trim() || 'Other',
+        trackingType,
       };
       updatedExercises = [...exercises, newExercise];
     }
@@ -192,6 +196,46 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
                 value={exerciseCategory}
                 onChangeText={setExerciseCategory}
               />
+            </View>
+
+            <View style={styles.modalSection}>
+              <Text style={styles.label}>TRACKING TYPE *</Text>
+              <View style={styles.trackingTypeContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.trackingTypeButton,
+                    trackingType === 'reps' && styles.trackingTypeButtonActive,
+                  ]}
+                  onPress={() => setTrackingType('reps')}
+                  activeOpacity={0.8}
+                >
+                  <Text
+                    style={[
+                      styles.trackingTypeButtonText,
+                      trackingType === 'reps' && styles.trackingTypeButtonTextActive,
+                    ]}
+                  >
+                    REPS
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.trackingTypeButton,
+                    trackingType === 'duration' && styles.trackingTypeButtonActive,
+                  ]}
+                  onPress={() => setTrackingType('duration')}
+                  activeOpacity={0.8}
+                >
+                  <Text
+                    style={[
+                      styles.trackingTypeButtonText,
+                      trackingType === 'duration' && styles.trackingTypeButtonTextActive,
+                    ]}
+                  >
+                    DURATION
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.modalButtons}>
@@ -358,6 +402,35 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.sm,
     borderWidth: 1,
     borderColor: theme.colors.border,
+  },
+  trackingTypeContainer: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
+  },
+  trackingTypeButton: {
+    flex: 1,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trackingTypeButtonActive: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  },
+  trackingTypeButtonText: {
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    color: theme.colors.text,
+    textTransform: 'uppercase',
+  },
+  trackingTypeButtonTextActive: {
+    color: theme.colors.surface,
   },
   modalButtons: {
     flexDirection: 'row',
