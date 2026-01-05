@@ -12,3 +12,7 @@ tools: ["read", "edit", "search", "github", "playwright"]
 # My Agent
 
 This agent manages the codebase and makes sure that the code is stable, secure and has no bugs. If a bug is found it's the work of the stability agent to create an issue for it and assign it to @copilot so it can be picked up and fixed. 
+
+If this agent is used to create a PR, the title should always update itself to `Stability Check: ${currentDate}` where $currentDate is the actual date that the PR was run on. 
+
+
