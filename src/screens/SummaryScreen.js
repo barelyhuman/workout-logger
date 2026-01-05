@@ -42,11 +42,11 @@ export const SummaryScreen = ({ navigation }) => {
         groups[dateKey] = {
           date: date,
           dateKey: dateKey,
-          logs: [],
+          data: [],
         };
       }
       
-      groups[dateKey].logs.push(log);
+      groups[dateKey].data.push(log);
     });
 
     // Convert to array and sort by date (most recent first)
@@ -58,7 +58,7 @@ export const SummaryScreen = ({ navigation }) => {
   const renderSectionHeader = ({ section }) => (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionHeaderText}>{formatDate(section.date)}</Text>
-      <Text style={styles.sectionHeaderCount}>{section.logs.length} exercise{section.logs.length !== 1 ? 's' : ''}</Text>
+      <Text style={styles.sectionHeaderCount}>{section.data.length} exercise{section.data.length !== 1 ? 's' : ''}</Text>
     </View>
   );
 
@@ -96,7 +96,7 @@ export const SummaryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <View style={styles.header}>
         <Text style={styles.title}>Summary</Text>
       </View>

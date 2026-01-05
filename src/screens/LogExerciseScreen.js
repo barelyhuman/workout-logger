@@ -147,7 +147,7 @@ export const LogExerciseScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <View style={styles.header}>
         <View style={styles.headerButtons}>
           <TouchableOpacity
