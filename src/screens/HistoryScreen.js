@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../utils/theme';
 import { loadExerciseLogs } from '../utils/storage';
+import { formatDate, formatTime } from '../utils/dateFormatter';
 
 export const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
@@ -25,28 +26,6 @@ export const HistoryScreen = ({ navigation }) => {
     const data = await loadExerciseLogs();
     setHistory(data);
     setLoading(false);
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = now - date;
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) {
-      return 'Today';
-    } else if (diffDays === 1) {
-      return 'Yesterday';
-    } else if (diffDays < 7) {
-      return `${diffDays} days ago`;
-    } else {
-      return date.toLocaleDateString();
-    }
-  };
-
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   const renderExerciseLog = ({ item }) => {
