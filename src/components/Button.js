@@ -14,7 +14,7 @@ export const Button = ({ title, onPress, variant = 'primary', disabled = false, 
       activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? theme.colors.text : theme.colors.background} />
+        <ActivityIndicator color={variant === 'outline' ? theme.colors.text : theme.colors.surface} />
       ) : (
         <Text style={[textStyle, disabled && styles.textDisabled]}>{title}</Text>
       )}
@@ -25,20 +25,21 @@ export const Button = ({ title, onPress, variant = 'primary', disabled = false, 
 const styles = StyleSheet.create({
   buttonPrimary: {
     backgroundColor: theme.colors.primary,
-    paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.sm,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
-    ...theme.elevation.low,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
   },
   buttonOutline: {
-    backgroundColor: 'transparent',
-    paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 2,
+    backgroundColor: theme.colors.surface,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.borderRadius.sm,
+    borderWidth: 1,
     borderColor: theme.colors.border,
     alignItems: 'center',
     justifyContent: 'center',
@@ -48,16 +49,18 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   textPrimary: {
-    color: theme.colors.background,
-    fontSize: theme.typography.bodySemibold.fontSize,
-    fontWeight: theme.typography.bodySemibold.fontWeight,
-    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    color: theme.colors.surface,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    textTransform: 'uppercase',
   },
   textOutline: {
     color: theme.colors.text,
-    fontSize: theme.typography.bodySemibold.fontSize,
-    fontWeight: theme.typography.bodySemibold.fontWeight,
-    letterSpacing: theme.typography.bodySemibold.letterSpacing,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    textTransform: 'uppercase',
   },
   textDisabled: {
     color: theme.colors.textTertiary,

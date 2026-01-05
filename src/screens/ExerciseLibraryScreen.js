@@ -125,33 +125,35 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       <TouchableOpacity
         style={styles.exerciseContent}
         onPress={() => handleEditExercise(item)}
+        activeOpacity={0.8}
       >
-        <Text style={styles.exerciseName}>{item.name}</Text>
         {item.category && (
-          <Text style={styles.exerciseCategory}>{item.category}</Text>
+          <Text style={styles.exerciseCategoryLabel}>{item.category}</Text>
         )}
+        <Text style={styles.exerciseName}>{item.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => handleDeleteExercise(item.id)}
+        activeOpacity={0.8}
       >
-        <Text style={styles.deleteButtonText}>Delete</Text>
+        <Text style={styles.deleteButtonText}>DELETE</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
-        <Text style={styles.title}>Exercise Library</Text>
+        <Text style={styles.title}>EXERCISE LIBRARY</Text>
       </View>
 
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
           placeholder="Search exercises..."
-          placeholderTextColor={theme.colors.textSecondary}
+          placeholderTextColor={theme.colors.textTertiary}
           value={searchQuery}
           onChangeText={handleSearch}
           autoCapitalize="none"
@@ -181,7 +183,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
       />
 
       <View style={styles.footer}>
-        <Button title="Add Exercise" onPress={handleAddExercise} />
+        <Button title="ADD EXERCISE" onPress={handleAddExercise} />
       </View>
 
       <Modal
@@ -220,13 +222,13 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
             <View style={styles.modalButtons}>
               <Button
-                title="Cancel"
+                title="CANCEL"
                 onPress={() => setModalVisible(false)}
                 variant="outline"
                 style={[styles.modalButton, styles.modalButtonLeft]}
               />
               <Button
-                title="Save"
+                title="SAVE"
                 onPress={handleSaveExercise}
                 style={[styles.modalButton, styles.modalButtonRight]}
               />
@@ -245,16 +247,18 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    backgroundColor: theme.colors.background,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
   },
   title: {
-    fontSize: theme.typography.title.fontSize,
-    fontWeight: theme.typography.title.fontWeight,
-    letterSpacing: theme.typography.title.letterSpacing,
-    lineHeight: theme.typography.title.lineHeight,
-    color: theme.colors.text,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
+    textTransform: 'uppercase',
   },
   searchContainer: {
     paddingHorizontal: theme.spacing.md,
@@ -268,7 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.body.fontWeight,
     letterSpacing: theme.typography.body.letterSpacing,
     padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.borderRadius.sm,
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
@@ -280,8 +284,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: theme.colors.surface,
-    padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    borderRadius: theme.borderRadius.sm,
     borderWidth: 1,
     borderColor: theme.colors.border,
     marginBottom: theme.spacing.sm,
@@ -290,43 +295,50 @@ const styles = StyleSheet.create({
   exerciseContent: {
     flex: 1,
   },
-  exerciseName: {
-    fontSize: theme.typography.bodySemibold.fontSize,
-    fontWeight: theme.typography.bodySemibold.fontWeight,
-    letterSpacing: theme.typography.bodySemibold.letterSpacing,
-    lineHeight: theme.typography.bodySemibold.lineHeight,
-    color: theme.colors.text,
+  exerciseCategoryLabel: {
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
     marginBottom: theme.spacing.xs,
+    textTransform: 'uppercase',
   },
-  exerciseCategory: {
-    fontSize: theme.typography.caption.fontSize,
-    fontWeight: theme.typography.caption.fontWeight,
-    letterSpacing: theme.typography.caption.letterSpacing,
-    lineHeight: theme.typography.caption.lineHeight,
-    color: theme.colors.textSecondary,
+  exerciseName: {
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
+    color: theme.colors.text,
   },
   deleteButton: {
-    padding: theme.spacing.sm,
-    paddingLeft: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   deleteButtonText: {
-    fontSize: theme.typography.caption.fontSize,
-    fontWeight: theme.typography.caption.fontWeight,
-    letterSpacing: theme.typography.caption.letterSpacing,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
     color: theme.colors.textSecondary,
+    textTransform: 'uppercase',
   },
   emptyContainer: {
     paddingVertical: theme.spacing.xxl,
+    paddingHorizontal: theme.spacing.md,
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: theme.typography.bodySemibold.fontSize,
-    fontWeight: theme.typography.bodySemibold.fontWeight,
-    letterSpacing: theme.typography.bodySemibold.letterSpacing,
-    lineHeight: theme.typography.bodySemibold.lineHeight,
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: theme.typography.bodyMedium.fontWeight,
+    letterSpacing: theme.typography.body.letterSpacing,
+    lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.text,
     textAlign: 'center',
-    marginBottom: theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
   },
   emptySubtext: {
     fontSize: theme.typography.caption.fontSize,
@@ -338,40 +350,45 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: theme.spacing.md,
+    backgroundColor: theme.colors.background,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.xl,
+    borderRadius: theme.borderRadius.sm,
     padding: theme.spacing.lg,
     width: '85%',
     maxWidth: 400,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   modalTitle: {
-    fontSize: theme.typography.heading.fontSize,
-    fontWeight: theme.typography.heading.fontWeight,
-    letterSpacing: theme.typography.heading.letterSpacing,
-    lineHeight: theme.typography.heading.lineHeight,
-    color: theme.colors.text,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
     marginBottom: theme.spacing.lg,
+    textTransform: 'uppercase',
   },
   modalSection: {
     marginBottom: theme.spacing.md,
   },
   label: {
-    fontSize: theme.typography.bodyMedium.fontSize,
-    fontWeight: theme.typography.bodyMedium.fontWeight,
-    letterSpacing: theme.typography.bodyMedium.letterSpacing,
-    lineHeight: theme.typography.bodyMedium.lineHeight,
-    color: theme.colors.text,
+    fontSize: theme.typography.micro.fontSize,
+    fontWeight: theme.typography.micro.fontWeight,
+    letterSpacing: theme.typography.micro.letterSpacing,
+    lineHeight: theme.typography.micro.lineHeight,
+    color: theme.colors.textMicro,
     marginBottom: theme.spacing.sm,
+    textTransform: 'uppercase',
   },
   input: {
     backgroundColor: theme.colors.background,
@@ -380,7 +397,7 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.body.fontWeight,
     letterSpacing: theme.typography.body.letterSpacing,
     padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.borderRadius.sm,
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
@@ -388,14 +405,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: theme.spacing.lg,
+    gap: theme.spacing.sm,
   },
   modalButton: {
     flex: 1,
   },
   modalButtonLeft: {
-    marginRight: theme.spacing.xs,
+    marginRight: 0,
   },
   modalButtonRight: {
-    marginLeft: theme.spacing.xs,
+    marginLeft: 0,
   },
 });
