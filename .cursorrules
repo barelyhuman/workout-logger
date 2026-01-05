@@ -1,84 +1,108 @@
 # Workout Logger - Cursor AI Rules
 
 ## Project Overview
-This is a React Native Expo app for Android that helps users track calisthenics workouts. The app uses a strict monochromatic (black/white/gray only) theme and stores all data locally using AsyncStorage.
+This is a React Native Expo app for Android that helps users track calisthenics workouts. The app uses an **Industrial Design System** inspired by precision measuring tools and technical instruments. It features an off-white base color, micro-labels, generous whitespace, and a minimal monochromatic aesthetic. All data is stored locally using AsyncStorage.
 
-## Design Philosophy - SWISS Design Principles
+## Design Philosophy - Industrial Design System
 
-This app follows a **responsive and compact variation of SWISS Design principles**. All UI design decisions must align with these core principles:
+This app follows an **Industrial Design System** inspired by precision tools, technical instruments, and minimal industrial aesthetics. See `DESIGN_SYSTEM.md` for complete documentation.
 
-### Core SWISS Design Characteristics
+### Core Design Principles
 
-1. **Grid-Based Layout System**
-   - Uses a 4px grid system (all spacing is multiples of 4 pixels)
-   - All spacing values are multiples of 4: 4, 8, 12, 16, 20, 24, 32
-   - Consistent spacing creates visual rhythm and hierarchy
-   - Use theme spacing constants: `theme.spacing.xs` (4), `sm` (8), `md` (12), `lg` (16), `xl` (20), `xxl` (24), `xxxl` (32)
-
-2. **Minimalism & Reduction to Essentials**
-   - Strictly monochromatic palette (black/white/grays only)
-   - No decorative elements or unnecessary visual flourishes
-   - Every UI element serves a clear functional purpose
+1. **Precision & Clarity**
+   - Every element has a clear purpose, like markings on a measuring tool
+   - Minimal, functional design with no decorative elements
    - Clean, uncluttered interfaces with strong focus on content
-   - Generous use of whitespace (negative space) for breathing room
 
-3. **Typography-Focused Design**
-   - Typography is the primary design element
-   - Carefully crafted font sizes, weights, letter spacing, and line heights
-   - Clear typographic hierarchy (title → heading → subheading → body → caption → small)
-   - Compact mobile-optimized sizes for responsive design
-   - All typography uses theme constants for consistency
+2. **Micro-Labels (Signature Feature)**
+   - Small, uppercase annotations (11px, 500 weight, 0.5 letter-spacing)
+   - Provide context without visual clutter
+   - Used for: section headers, field labels, button text, category tags
+   - Example: "REPS", "HISTORY", "UPPER BODY", "LOG"
 
-4. **Functional & Purposeful**
-   - Form follows function - design serves usability
-   - Clear visual hierarchy guides user attention
-   - Intuitive interactions without unnecessary complexity
-   - Every element has a clear purpose and meaning
+3. **Generous Whitespace**
+   - 8px grid system (doubled from previous 4px for more breathing room)
+   - Spacing values: micro (2), xs (4), sm (8), md (16), lg (24), xl (32), xxl (40), xxxl (48)
+   - Creates calm, focused experience
+   - Improves readability and reduces cognitive load
 
-5. **Responsive & Compact**
-   - Optimized for mobile screens with compact spacing
-   - Touch-friendly minimum sizes (44px minimum touch targets)
-   - Efficient use of screen real estate
-   - Scalable and adaptable layouts
+4. **Off-White Base Color**
+   - Background: `#F5F5F0` (warm off-white instead of pure black)
+   - Reduces eye strain, more approachable
+   - Better suits industrial/technical aesthetic
+   - Surface: `#FFFFFF` for cards and elevated elements
+
+5. **Angular, Precise Aesthetic**
+   - Small border radius values: none (0), sm (2), md (4), lg (6)
+   - Subtle 1px borders for definition
+   - Technical, structured feel
+   - Inspired by precision instruments
 
 ### Design Implementation Rules
 
-- **ALWAYS** use the 4px grid system for all spacing and sizing
-- **ALWAYS** use theme typography constants for text styling
-- **ALWAYS** maintain the monochromatic color scheme (no colors)
+- **ALWAYS** use micro-labels (uppercase, 11px, 500 weight) for headers and field labels
+- **ALWAYS** use the 8px grid system for spacing
+- **ALWAYS** maintain the monochromatic color scheme (no colors beyond grays)
+- **ALWAYS** use off-white background (#F5F5F0) and white surfaces (#FFFFFF)
 - **ALWAYS** ensure minimum 44px touch targets for interactive elements
 - **NEVER** add decorative elements that don't serve a functional purpose
 - **NEVER** use colors outside the monochromatic palette
 - **NEVER** hardcode spacing or typography values - use theme constants
+- **NEVER** use large border radius (keep it angular and precise)
 
-### Theme Structure Reflects SWISS Principles
+### Theme Structure
 
-The `src/utils/theme.js` file is structured to enforce SWISS Design:
-- `colors`: Monochromatic palette only (black, white, grays)
-- `spacing`: 4px grid system - all values are multiples of 4px (xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, xxxl: 32)
-- `borderRadius`: Compact scale for subtle corners (sm: 3, md: 6, lg: 8, xl: 12) - optimized for mobile UI
-- `typography`: Complete typographic scale with precise letter spacing and line heights
-- `elevation`: Subtle depth using monochrome shadows with opacity
+The `src/utils/theme.js` file is structured to enforce the Industrial Design System:
+- `colors`: Off-white base (#F5F5F0) with monochromatic palette
+- `spacing`: 8px grid system - micro (2), xs (4), sm (8), md (16), lg (24), xl (32), xxl (40), xxxl (48)
+- `borderRadius`: Minimal scale for angular aesthetic - none (0), sm (2), md (4), lg (6)
+- `typography`: Includes special `micro` and `microRegular` styles for industrial labels
+- `elevation`: Subtle depth using monochrome shadows
 
-Note: Border radius values are intentionally compact and not strictly multiples of 4px, as they're optimized for subtle, mobile-friendly rounded corners.
+### Typography - Key Styles
 
-When making any UI changes, ask yourself:
-1. Does this follow the grid system?
-2. Is this minimal and essential?
-3. Does the typography create clear hierarchy?
-4. Is this functional and purposeful?
-5. Is this responsive and compact for mobile?
+**Micro-Labels (Signature):**
+```javascript
+micro: {
+  fontSize: 11,
+  fontWeight: '500',
+  letterSpacing: 0.5,
+  textTransform: 'uppercase',
+}
+```
+
+**Body Text:**
+```javascript
+body: {
+  fontSize: 15,
+  fontWeight: '400',
+  letterSpacing: 0,
+  lineHeight: 22,
+}
+```
+
+**Numeric Display:**
+```javascript
+numeric: {
+  fontSize: 24,
+  fontWeight: '600',
+  letterSpacing: -0.5,
+  lineHeight: 32,
+}
+```
 
 ## Critical Requirements
 
-### Theme - STRICTLY MONOCHROMATIC
-- **NEVER** use colors other than black, white, and shades of gray
+### Theme - STRICTLY MONOCHROMATIC WITH OFF-WHITE BASE
+- **NEVER** use colors other than white, off-white, and shades of gray
 - All colors must come from `src/utils/theme.js`
-- Background: `#000000` (black)
-- Surface: `#1a1a1a` or `#2a2a2a` (dark gray)
-- Text: `#ffffff` (white) or `#999999` (gray)
-- Borders: `#333333` (dark gray)
+- Background: `#F5F5F0` (warm off-white)
+- Surface: `#FFFFFF` (pure white)
+- Text: `#1A1A1A` (almost black), `#666666` (medium gray), `#999999` (light gray)
+- Text Micro: `#AAAAAA` (very light gray for micro-labels)
+- Borders: `#E0E0DC` (subtle warm gray)
 - **DO NOT** add any colored accents, highlights, or UI elements
+- StatusBar style must be "dark" (not "light") for light theme
 
 ### Code Style
 - Use functional components with React hooks (no class components)
@@ -114,7 +138,7 @@ export const ComponentName = ({ navigation, prop1 }) => {
   // 4. Render
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {/* JSX content */}
     </SafeAreaView>
   );
@@ -239,26 +263,31 @@ const handleSave = async (newData) => {
 4. Use `@` prefix for storage keys
 
 ### What NOT to Do
-- ❌ Don't add colors (strictly monochromatic - SWISS Design principle)
+- ❌ Don't add colors (strictly monochromatic - Industrial Design System)
+- ❌ Don't use pure black background (use off-white #F5F5F0)
+- ❌ Don't skip micro-labels for headers/field labels
+- ❌ Don't use large border radius (keep angular: 0-6px)
 - ❌ Don't use class components
-- ❌ Don't hardcode colors or spacing values (violates grid system - SWISS Design principle)
+- ❌ Don't hardcode colors or spacing values (violates grid system)
 - ❌ Don't create inline styles (use StyleSheet.create)
-- ❌ Don't add decorative elements without functional purpose (violates minimalism - SWISS Design principle)
-- ❌ Don't use spacing values that aren't multiples of 4px (violates grid system - SWISS Design principle)
+- ❌ Don't add decorative elements without functional purpose
+- ❌ Don't use spacing values that aren't from the 8px grid
+- ❌ Don't forget uppercase text transform for micro-labels
+- ❌ Don't use StatusBar style="light" (use "dark" for light theme)
 - ❌ Don't add network calls (app is offline-only)
-- ❌ Don't modify default routines structure without updating all references
 - ❌ Don't skip error handling in async functions
 
 ### Testing Considerations
 - Test on Android (primary platform)
 - All data persists locally (no backend)
-- Default routines load on first launch
-- Workout history accumulates over time
+- Default exercises load on first launch
+- Exercise logs accumulate over time
 
 ## Quick Reference
+- Design System Documentation: `DESIGN_SYSTEM.md`
 - Theme: `src/utils/theme.js`
 - Storage: `src/utils/storage.js`
-- Default Routines: `src/data/defaultRoutines.js`
+- Default Exercises: `src/data/defaultExercises.js`
 - Navigation: `App.js`
 - Main Entry: `index.js`
 
