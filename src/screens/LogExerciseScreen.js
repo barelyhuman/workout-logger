@@ -64,8 +64,13 @@ export const LogExerciseScreen = ({ navigation }) => {
       const min = parseInt(minutes || '0', 10);
       const sec = parseInt(seconds || '0', 10);
       
-      if (isNaN(min) || isNaN(sec) || (min === 0 && sec === 0)) {
-        Alert.alert('Error', 'Please enter a valid duration (at least 1 second)');
+      if (isNaN(min) || isNaN(sec) || min < 0 || sec < 0) {
+        Alert.alert('Error', 'Please enter valid positive numbers for duration');
+        return;
+      }
+      
+      if (min === 0 && sec === 0) {
+        Alert.alert('Error', 'Duration must be at least 1 second');
         return;
       }
       
@@ -96,10 +101,7 @@ export const LogExerciseScreen = ({ navigation }) => {
       if (trackingType === 'reps') {
         Alert.alert('Success', `Logged ${reps} reps of ${selectedExercise.name}`);
       } else {
-        const min = parseInt(minutes || '0', 10);
-        const sec = parseInt(seconds || '0', 10);
-        const totalSeconds = min * 60 + sec;
-        Alert.alert('Success', `Logged ${formatDuration(totalSeconds)} of ${selectedExercise.name}`);
+        Alert.alert('Success', `Logged ${formatDuration(log.duration)} of ${selectedExercise.name}`);
       }
       setModalVisible(false);
       setReps('');

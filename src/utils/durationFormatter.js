@@ -4,6 +4,11 @@
  * @returns {string} Formatted duration string (e.g., "30s", "2m", "2m 30s")
  */
 export const formatDuration = (totalSeconds) => {
+  // Validate input
+  if (typeof totalSeconds !== 'number' || totalSeconds < 0 || !isFinite(totalSeconds)) {
+    return '0s';
+  }
+  
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   
