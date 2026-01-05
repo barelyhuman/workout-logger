@@ -225,10 +225,10 @@ const styles = StyleSheet.create({
     color: theme.colors.textSecondary,
   },
   time: {
-    fontSize: theme.typography.small.fontSize,
-    fontWeight: theme.typography.small.fontWeight,
-    letterSpacing: theme.typography.small.letterSpacing,
-    lineHeight: theme.typography.small.lineHeight,
+    fontSize: theme.typography.microRegular.fontSize,
+    fontWeight: theme.typography.microRegular.fontWeight,
+    letterSpacing: theme.typography.microRegular.letterSpacing,
+    lineHeight: theme.typography.microRegular.lineHeight,
     color: theme.colors.textTertiary,
   },
   emptyContainer: {
