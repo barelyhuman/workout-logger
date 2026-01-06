@@ -1,8 +1,69 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { generateId, isUUID } from './uuid';
 
 const EXERCISE_LOG_KEY = '@exercise_log';
 const EXERCISE_LIBRARY_KEY = '@exercise_library';
 const EXERCISE_LIBRARY_INITIALIZED_KEY = '@exercise_library_initialized';
+const MIGRATION_COMPLETED_KEY = '@migration_to_uuid_completed';
+
+// Migration function to convert existing IDs to UUIDs
+export const migrateIdsToUUID = async () => {
+  try {
+    // Check if migration already completed
+    const migrationCompleted = await AsyncStorage.getItem(MIGRATION_COMPLETED_KEY);
+    if (migrationCompleted === 'true') {
+      return { success: true, alreadyMigrated: true };
+    }
+
+    let migratedLogs = 0;
+    let migratedExercises = 0;
+
+    // Migrate exercise logs
+    const logs = await loadExerciseLogs();
+    if (logs.length > 0) {
+      const needsMigration = logs.some(log => !isUUID(log.id));
+      if (needsMigration) {
+        const migratedLogsData = logs.map(log => {
+          if (!isUUID(log.id)) {
+            migratedLogs++;
+            return { ...log, id: generateId(), oldId: log.id };
+          }
+          return log;
+        });
+        await AsyncStorage.setItem(EXERCISE_LOG_KEY, JSON.stringify(migratedLogsData));
+      }
+    }
+
+    // Migrate exercise library
+    const exercises = await loadExerciseLibrary();
+    if (exercises.length > 0) {
+      const needsMigration = exercises.some(ex => !isUUID(ex.id));
+      if (needsMigration) {
+        const migratedExercisesData = exercises.map(ex => {
+          if (!isUUID(ex.id)) {
+            migratedExercises++;
+            return { ...ex, id: generateId(), oldId: ex.id };
+          }
+          return ex;
+        });
+        await AsyncStorage.setItem(EXERCISE_LIBRARY_KEY, JSON.stringify(migratedExercisesData));
+      }
+    }
+
+    // Mark migration as completed
+    await AsyncStorage.setItem(MIGRATION_COMPLETED_KEY, 'true');
+
+    return { 
+      success: true, 
+      alreadyMigrated: false,
+      migratedLogs,
+      migratedExercises
+    };
+  } catch (error) {
+    console.error('Error migrating IDs to UUID:', error);
+    return { success: false, error: error.message };
+  }
+};
 
 // Exercise log storage (simplified logging)
 export const saveExerciseLog = async (exerciseLog) => {

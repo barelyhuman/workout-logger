@@ -15,6 +15,7 @@ import { theme } from '../utils/theme';
 import { loadExerciseLibrary, saveExerciseLog } from '../utils/storage';
 import { formatDuration } from '../utils/durationFormatter';
 import { Button } from '../components/Button';
+import { generateId } from '../utils/uuid';
 
 export const LogExerciseScreen = ({ navigation }) => {
   const [exercises, setExercises] = useState([]);
@@ -88,7 +89,7 @@ export const LogExerciseScreen = ({ navigation }) => {
     }
 
     const log = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+      id: generateId(),
       exerciseId: selectedExercise.id,
       exerciseName: selectedExercise.name,
       category: selectedExercise.category,
