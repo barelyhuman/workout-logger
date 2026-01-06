@@ -96,7 +96,7 @@ export const SummaryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>Summary</Text>
       </View>

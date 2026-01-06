@@ -147,7 +147,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>EXERCISE LIBRARY</Text>
       </View>

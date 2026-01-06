@@ -77,6 +77,10 @@ export const HistoryScreen = ({ navigation }) => {
         return;
       }
       parsedReps = parseInt(reps, 10);
+      if (parsedReps <= 0) {
+        Alert.alert('Error', 'Reps must be a positive number');
+        return;
+      }
     } else {
       parsedMinutes = parseInt(minutes || '0', 10);
       parsedSeconds = parseInt(seconds || '0', 10);
@@ -191,7 +195,7 @@ export const HistoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>HISTORY</Text>
       </View>

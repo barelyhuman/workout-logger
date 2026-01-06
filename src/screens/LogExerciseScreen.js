@@ -62,6 +62,10 @@ export const LogExerciseScreen = ({ navigation }) => {
         return;
       }
       parsedReps = parseInt(reps, 10);
+      if (parsedReps <= 0) {
+        Alert.alert('Error', 'Reps must be a positive number');
+        return;
+      }
     } else {
       // Duration tracking - parse and validate
       parsedMinutes = parseInt(minutes || '0', 10);
@@ -147,7 +151,7 @@ export const LogExerciseScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <View style={styles.headerButtons}>
           <TouchableOpacity
