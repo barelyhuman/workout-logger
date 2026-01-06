@@ -88,7 +88,7 @@ export const LogExerciseScreen = ({ navigation }) => {
     }
 
     const log = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       exerciseId: selectedExercise.id,
       exerciseName: selectedExercise.name,
       category: selectedExercise.category,
