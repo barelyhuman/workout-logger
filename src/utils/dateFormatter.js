@@ -2,6 +2,12 @@
 
 export const formatDate = (dateInput) => {
   const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  
+  // Validate date
+  if (isNaN(date.getTime())) {
+    return 'Invalid date';
+  }
+  
   const now = new Date();
   
   // Reset time to midnight for accurate day comparison
@@ -28,5 +34,11 @@ export const formatDate = (dateInput) => {
 
 export const formatTime = (dateString) => {
   const date = new Date(dateString);
+  
+  // Validate date
+  if (isNaN(date.getTime())) {
+    return 'Invalid time';
+  }
+  
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };

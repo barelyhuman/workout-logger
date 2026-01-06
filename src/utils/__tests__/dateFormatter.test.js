@@ -77,6 +77,12 @@ describe('formatDate', () => {
       const timestamp = new Date('2024-01-15T10:00:00Z').getTime();
       expect(formatDate(timestamp)).toBe('Today');
     });
+
+    it('should handle invalid dates', () => {
+      expect(formatDate('invalid-date')).toBe('Invalid date');
+      expect(formatDate(null)).toBe('Invalid date');
+      expect(formatDate(undefined)).toBe('Invalid date');
+    });
   });
 });
 
@@ -104,5 +110,11 @@ describe('formatTime', () => {
     const dateString = '2024-01-15T12:00:00Z';
     const result = formatTime(dateString);
     expect(result).toMatch(/\d{1,2}:\d{2}/);
+  });
+
+  it('should handle invalid dates', () => {
+    expect(formatTime('invalid-date')).toBe('Invalid time');
+    expect(formatTime(null)).toBe('Invalid time');
+    expect(formatTime(undefined)).toBe('Invalid time');
   });
 });
