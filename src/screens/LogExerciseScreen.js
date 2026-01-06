@@ -15,6 +15,7 @@ import { theme } from '../utils/theme';
 import { loadExerciseLibrary, saveExerciseLog } from '../utils/storage';
 import { formatDuration } from '../utils/durationFormatter';
 import { Button } from '../components/Button';
+import { generateId } from '../utils/uuid';
 
 export const LogExerciseScreen = ({ navigation }) => {
   const [exercises, setExercises] = useState([]);
@@ -62,6 +63,10 @@ export const LogExerciseScreen = ({ navigation }) => {
         return;
       }
       parsedReps = parseInt(reps, 10);
+      if (parsedReps <= 0) {
+        Alert.alert('Error', 'Reps must be a positive number');
+        return;
+      }
     } else {
       // Duration tracking - parse and validate
       parsedMinutes = parseInt(minutes || '0', 10);
@@ -84,7 +89,7 @@ export const LogExerciseScreen = ({ navigation }) => {
     }
 
     const log = {
-      id: Date.now().toString(),
+      id: generateId(),
       exerciseId: selectedExercise.id,
       exerciseName: selectedExercise.name,
       category: selectedExercise.category,
@@ -147,7 +152,7 @@ export const LogExerciseScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <View style={styles.headerButtons}>
           <TouchableOpacity

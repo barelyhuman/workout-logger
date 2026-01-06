@@ -15,6 +15,7 @@ import { theme } from '../utils/theme';
 import { loadExerciseLibrary, saveExerciseLibrary, isExerciseLibraryInitialized, setExerciseLibraryInitialized } from '../utils/storage';
 import { defaultExercises } from '../data/defaultExercises';
 import { Button } from '../components/Button';
+import { generateId } from '../utils/uuid';
 
 export const ExerciseLibraryScreen = ({ navigation }) => {
   const [exercises, setExercises] = useState([]);
@@ -79,9 +80,9 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
           : ex
       );
     } else {
-      // Add new exercise with more robust ID generation
+      // Add new exercise with UUID
       const newExercise = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
+        id: generateId(),
         name: exerciseName.trim(),
         category: exerciseCategory.trim() || 'Other',
         trackingType,
@@ -147,7 +148,7 @@ export const ExerciseLibraryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>EXERCISE LIBRARY</Text>
       </View>

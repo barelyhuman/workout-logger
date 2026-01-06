@@ -8,7 +8,9 @@ import {
   loadExerciseLibrary,
   isExerciseLibraryInitialized,
   setExerciseLibraryInitialized,
+  migrateIdsToUUID,
 } from '../storage';
+import { generateId, isUUID } from '../uuid';
 
 // Mock console methods to avoid noise in test output
 const originalConsoleError = console.error;
@@ -310,6 +312,178 @@ describe('storage', () => {
 
       expect(result).toBe(false);
       expect(console.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('migrateIdsToUUID', () => {
+    it('should skip migration if already completed', async () => {
+      AsyncStorage.getItem.mockImplementation(async (key) => {
+        if (key === '@migration_to_uuid_completed') return 'true';
+        return null;
+      });
+
+      const result = await migrateIdsToUUID();
+
+      expect(result.success).toBe(true);
+      expect(result.alreadyMigrated).toBe(true);
+    });
+
+    it('should migrate exercise logs with non-UUID IDs', async () => {
+      // Use a real UUID for the second log to test that it doesn't get migrated
+      const existingUUID = generateId();
+      const oldLogs = [
+        { id: '1234567890', exercise: 'Push-ups', reps: 20 },
+        { id: existingUUID, exercise: 'Pull-ups', reps: 10 },
+      ];
+
+      AsyncStorage.getItem.mockImplementation(async (key) => {
+        if (key === '@migration_to_uuid_completed') return null;
+        if (key === '@exercise_log') return JSON.stringify(oldLogs);
+        if (key === '@exercise_library') return JSON.stringify([]);
+        return null;
+      });
+
+      const result = await migrateIdsToUUID();
+
+      expect(result.success).toBe(true);
+      expect(result.alreadyMigrated).toBe(false);
+      expect(result.migratedLogs).toBe(1);
+      
+      // Check that setItem was called with migrated data
+      const setItemCalls = AsyncStorage.setItem.mock.calls;
+      const logSetCall = setItemCalls.find(call => call[0] === '@exercise_log');
+      expect(logSetCall).toBeDefined();
+      
+      const migratedLogs = JSON.parse(logSetCall[1]);
+      // First log should have been migrated with new UUID
+      expect(isUUID(migratedLogs[0].id)).toBe(true);
+      expect(migratedLogs[0].oldId).toBe('1234567890');
+      // Second log should remain unchanged (already had UUID)
+      expect(migratedLogs[1].id).toBe(existingUUID);
+      expect(migratedLogs[1].oldId).toBeUndefined();
+    });
+
+    it('should migrate exercise library with non-UUID IDs', async () => {
+      // Use a real UUID for the second exercise
+      const existingUUID = generateId();
+      const oldExercises = [
+        { id: '1', name: 'Push-ups', category: 'Upper Body' },
+        { id: existingUUID, name: 'Squats', category: 'Lower Body' },
+      ];
+
+      AsyncStorage.getItem.mockImplementation(async (key) => {
+        if (key === '@migration_to_uuid_completed') return null;
+        if (key === '@exercise_log') return JSON.stringify([]);
+        if (key === '@exercise_library') return JSON.stringify(oldExercises);
+        return null;
+      });
+
+      const result = await migrateIdsToUUID();
+
+      expect(result.success).toBe(true);
+      expect(result.migratedExercises).toBe(1);
+      
+      const setItemCalls = AsyncStorage.setItem.mock.calls;
+      const exerciseSetCall = setItemCalls.find(call => call[0] === '@exercise_library');
+      expect(exerciseSetCall).toBeDefined();
+      
+      const migratedExercises = JSON.parse(exerciseSetCall[1]);
+      // First exercise should have been migrated with new UUID
+      expect(isUUID(migratedExercises[0].id)).toBe(true);
+      expect(migratedExercises[0].oldId).toBe('1');
+      // Second exercise should remain unchanged (already had UUID)
+      expect(migratedExercises[1].id).toBe(existingUUID);
+      expect(migratedExercises[1].oldId).toBeUndefined();
+    });
+
+    it('should mark migration as completed', async () => {
+      AsyncStorage.getItem.mockResolvedValue(null);
+
+      await migrateIdsToUUID();
+
+      const setItemCalls = AsyncStorage.setItem.mock.calls;
+      const migrationFlagCall = setItemCalls.find(
+        call => call[0] === '@migration_to_uuid_completed' && call[1] === 'true'
+      );
+      expect(migrationFlagCall).toBeDefined();
+    });
+
+    it('should handle errors gracefully', async () => {
+      AsyncStorage.getItem.mockRejectedValueOnce(new Error('Storage error'));
+
+      const result = await migrateIdsToUUID();
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBeDefined();
+      expect(console.error).toHaveBeenCalled();
+    });
+
+    it('should skip migration if all IDs are already UUIDs', async () => {
+      // Use real UUIDs
+      const uuid1 = generateId();
+      const uuid2 = generateId();
+      const uuidLogs = [
+        { id: uuid1, exercise: 'Push-ups', reps: 20 },
+        { id: uuid2, exercise: 'Pull-ups', reps: 10 },
+      ];
+
+      AsyncStorage.getItem.mockImplementation(async (key) => {
+        if (key === '@migration_to_uuid_completed') return null;
+        if (key === '@exercise_log') return JSON.stringify(uuidLogs);
+        if (key === '@exercise_library') return JSON.stringify([]);
+        return null;
+      });
+
+      const result = await migrateIdsToUUID();
+
+      expect(result.success).toBe(true);
+      expect(result.migratedLogs).toBe(0);
+      
+      // Should still mark migration as completed
+      const setItemCalls = AsyncStorage.setItem.mock.calls;
+      const migrationFlagCall = setItemCalls.find(
+        call => call[0] === '@migration_to_uuid_completed'
+      );
+      expect(migrationFlagCall).toBeDefined();
+    });
+
+    it('should generate unique UUIDs for each migrated item', async () => {
+      const oldLogs = [
+        { id: '1', exercise: 'Push-ups', reps: 20 },
+        { id: '2', exercise: 'Pull-ups', reps: 10 },
+        { id: '3', exercise: 'Squats', reps: 15 },
+      ];
+
+      AsyncStorage.getItem.mockImplementation(async (key) => {
+        if (key === '@migration_to_uuid_completed') return null;
+        if (key === '@exercise_log') return JSON.stringify(oldLogs);
+        if (key === '@exercise_library') return JSON.stringify([]);
+        return null;
+      });
+
+      const result = await migrateIdsToUUID();
+
+      expect(result.success).toBe(true);
+      expect(result.migratedLogs).toBe(3);
+      
+      const setItemCalls = AsyncStorage.setItem.mock.calls;
+      const logSetCall = setItemCalls.find(call => call[0] === '@exercise_log');
+      const migratedLogs = JSON.parse(logSetCall[1]);
+      
+      // All should have valid UUIDs
+      expect(isUUID(migratedLogs[0].id)).toBe(true);
+      expect(isUUID(migratedLogs[1].id)).toBe(true);
+      expect(isUUID(migratedLogs[2].id)).toBe(true);
+      
+      // All UUIDs should be unique
+      const ids = migratedLogs.map(log => log.id);
+      const uniqueIds = new Set(ids);
+      expect(uniqueIds.size).toBe(3);
+      
+      // Old IDs should be preserved
+      expect(migratedLogs[0].oldId).toBe('1');
+      expect(migratedLogs[1].oldId).toBe('2');
+      expect(migratedLogs[2].oldId).toBe('3');
     });
   });
 });

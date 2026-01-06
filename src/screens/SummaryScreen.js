@@ -35,7 +35,17 @@ export const SummaryScreen = ({ navigation }) => {
     const groups = {};
     
     logs.forEach((log) => {
+      if (!log.timestamp) {
+        return; // Skip logs without timestamp
+      }
+      
       const date = new Date(log.timestamp);
+      
+      // Skip invalid dates
+      if (isNaN(date.getTime())) {
+        return;
+      }
+      
       const dateKey = date.toDateString();
       
       if (!groups[dateKey]) {
@@ -96,7 +106,7 @@ export const SummaryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View style={styles.header}>
         <Text style={styles.title}>Summary</Text>
       </View>
